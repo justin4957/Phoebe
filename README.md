@@ -1,6 +1,8 @@
 # Phoebe
 
-**Phoebe** is a minimal MVP package repository for user-submitted [JSON G-Expression](https://github.com/json-g/json_ge_lib) files and libraries. It provides both a REST API and web interface for publishing, discovering, and managing G-Expression packages.
+**Phoebe** is a minimal MVP package repository for storing and retrieving [G-Expressions](https://github.com/json-g/json_ge_lib) files and libraries. It provides both a REST API and web interface for publishing, discovering, and managing G-Expression packages.
+
+<img width="870" height="747" alt="Screenshot 2025-09-17 at 8 10 17 AM" src="https://github.com/user-attachments/assets/e4f0caa2-4052-49b1-8df6-9f31a41c4b52" />
 
 ## Features
 
@@ -13,6 +15,9 @@
 - 📊 **Download Tracking** - Monitor package usage and popularity
 
 ## G-Expression Support
+
+<img width="887" height="745" alt="Screenshot 2025-09-17 at 8 11 32 AM" src="https://github.com/user-attachments/assets/d24711d9-febc-4366-b2aa-5dc001788126" />
+
 
 Phoebe validates and stores JSON G-Expressions with support for all core expression types:
 - `lit` - Literal values
