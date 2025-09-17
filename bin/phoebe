@@ -1,0 +1,39 @@
+#!/usr/bin/env elixir
+
+# Phoebe CLI Executable Script
+#
+# This script allows running the Phoebe CLI directly without Mix.
+# Usage: ./bin/phoebe <command> [options] [arguments]
+
+# Determine the project directory
+project_dir = __DIR__ |> Path.join("..") |> Path.expand()
+
+# Add the lib directory to the code path
+Code.prepend_path(Path.join(project_dir, "lib"))
+
+# Ensure required applications are loaded
+:application.ensure_all_started(:crypto)
+:application.ensure_all_started(:ssl)
+:application.ensure_all_started(:inets)
+
+# Load dependencies
+deps_dir = Path.join(project_dir, "deps")
+if File.exists?(deps_dir) do
+  deps_dir
+  |> File.ls!()
+  |> Enum.each(fn dep ->
+    ebin_path = Path.join([deps_dir, dep, "ebin"])
+    if File.exists?(ebin_path) do
+      Code.prepend_path(ebin_path)
+    end
+  end)
+end
+
+# Start the CLI
+try do
+  Phoebe.CLI.main(System.argv())
+rescue
+  error ->
+    IO.puts("Error: #{Exception.message(error)}")
+    System.halt(1)
+end

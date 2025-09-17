@@ -1,0 +1,1329 @@
+/* Phoebe Custom Styles - Swiss International Style Typography */
+
+/* Layout */
+html, body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.4;
+  color: #000;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  margin: -20px -20px 40px -20px;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  margin: 0 0 40px 0;
+  opacity: 0.9;
+}
+
+.hero-stats {
+  margin: 40px 0;
+}
+
+.stat {
+  display: inline-block;
+  margin: 0 20px;
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-actions {
+  margin-top: 40px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0 8px;
+}
+
+.btn-primary {
+  background: white;
+  color: #667eea;
+}
+
+.btn-primary:hover {
+  background: #f8f9ff;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-secondary:hover {
+  background: white;
+  color: #667eea;
+}
+
+/* Sections */
+.section {
+  margin: 60px 0;
+}
+
+.section h2 {
+  font-size: 2rem;
+  margin: 0 0 30px 0;
+  color: #2d3748;
+}
+
+/* Page Headers */
+.page-header {
+  padding: 40px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+  color: #2d3748;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  color: #718096;
+  margin: 0;
+}
+
+.expression-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.expression-title {
+  font-size: 2.5rem;
+  margin: 0;
+  color: #2d3748;
+}
+
+.expression-name {
+  font-size: 1.1rem;
+  color: #667eea;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  margin: 5px 0 0 0;
+}
+
+.expression-stats {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.expression-stats span {
+  padding: 6px 12px;
+  background: #edf2f7;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* Grids */
+.expression-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+/* Cards */
+.expression-card, .feature-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.2s;
+}
+
+.expression-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border-color: #667eea;
+}
+
+.expression-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.expression-card h3 {
+  margin: 0 0 8px 0;
+  color: #2d3748;
+  font-size: 1.2rem;
+}
+
+.expression-card .expression-name {
+  font-size: 0.9rem;
+  margin: 0 0 12px 0;
+}
+
+.expression-card .expression-description {
+  color: #718096;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.expression-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #a0aec0;
+}
+
+.downloads {
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* Expression List */
+.expression-list {
+  space-y: 20px;
+}
+
+.expression-item {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.expression-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.expression-item .expression-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.expression-item .expression-title {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.expression-item .expression-name {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.expression-item .expression-description {
+  color: #718096;
+  margin: 0 0 16px 0;
+}
+
+.expression-item .expression-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Tags */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Search */
+.search-section {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 40px;
+}
+
+.search-form {
+  display: flex;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-results {
+  color: #718096;
+  margin: 0 0 20px 0;
+}
+
+/* Expression Detail */
+.expression-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.expression-info .section,
+.expression-code .section {
+  margin-bottom: 30px;
+}
+
+.expression-info h2,
+.expression-code h2 {
+  font-size: 1.5rem;
+  margin: 0 0 16px 0;
+  color: #2d3748;
+}
+
+.description-section p {
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.version-selector select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+}
+
+/* Code blocks */
+.code-block {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.code-info {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f7fafc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.code-info p {
+  margin: 4px 0;
+}
+
+.code-info code {
+  background: #e2e8f0;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.api-usage {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.api-usage h2 {
+  margin: 0 0 20px 0;
+}
+
+.code-examples {
+  display: grid;
+  gap: 20px;
+}
+
+.code-example h3 {
+  font-size: 1.1rem;
+  margin: 0 0 10px 0;
+  color: #4a5568;
+}
+
+/* Empty states */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.empty-state h3 {
+  font-size: 1.3rem;
+  margin: 0 0 12px 0;
+  color: #4a5568;
+}
+
+/* API Documentation - Swiss International Style */
+.api-docs {
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  background: white !important;
+  color: #000 !important;
+}
+
+.api-hero {
+  background: #000 !important;
+  color: #fff !important;
+  padding: 80px 60px 60px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.api-hero h1 {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 0 20px 0 !important;
+  text-transform: uppercase !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  color: #fff !important;
+}
+
+.api-subtitle {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+  opacity: 0.8 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  color: #fff !important;
+}
+
+.api-content {
+  padding: 60px !important;
+  background: white !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.api-section {
+  margin-bottom: 80px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  padding-bottom: 60px !important;
+}
+
+.api-section:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.api-section h2 {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 40px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.api-section h3 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: uppercase !important;
+  margin: 40px 0 20px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.api-section h4 {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  margin: 30px 0 15px 0 !important;
+  color: #666 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.api-section p {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  margin: 0 0 20px 0 !important;
+  color: #333 !important;
+  max-width: 650px !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.api-tutorial-links {
+  margin: 40px 0 !important;
+}
+
+.tutorial-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.tutorial-list li {
+  margin: 0 0 30px 0 !important;
+  border-left: 3px solid #000 !important;
+  padding-left: 25px !important;
+}
+
+.tutorial-link {
+  text-decoration: none !important;
+  color: #000 !important;
+  display: block !important;
+}
+
+.tutorial-link strong {
+  display: block !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  margin-bottom: 5px !important;
+  text-transform: uppercase !important;
+}
+
+.tutorial-link span {
+  font-size: 14px !important;
+  color: #666 !important;
+  line-height: 1.4 !important;
+}
+
+.tutorial-link:hover {
+  opacity: 0.7 !important;
+}
+
+.code-sample {
+  background: #f8f8f8 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 20px !important;
+  margin: 20px 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  overflow-x: auto !important;
+}
+
+.code-sample code {
+  background: none !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+}
+
+.code-sample pre {
+  margin: 0 !important;
+  white-space: pre-wrap !important;
+}
+
+.endpoint-group {
+  margin: 40px 0 60px 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 30px !important;
+}
+
+.endpoint-details {
+  margin-top: 20px !important;
+}
+
+.method-url {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+}
+
+.method {
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-right: 15px !important;
+  border-radius: 2px !important;
+}
+
+.method.get {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.method.post {
+  background: #666 !important;
+  color: #fff !important;
+}
+
+.url {
+  font-size: 16px !important;
+  color: #000 !important;
+  font-weight: 500 !important;
+}
+
+.params-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 20px 0 !important;
+  font-size: 14px !important;
+}
+
+.params-table th {
+  background: #f0f0f0 !important;
+  padding: 12px !important;
+  text-align: left !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 12px !important;
+  border-bottom: 2px solid #000 !important;
+}
+
+.params-table td {
+  padding: 12px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  vertical-align: top !important;
+}
+
+.params-table code {
+  background: #f8f8f8 !important;
+  padding: 2px 6px !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 13px !important;
+}
+
+.tutorial-content {
+  max-width: 700px !important;
+}
+
+.tutorial-content ul {
+  padding-left: 20px !important;
+  margin: 20px 0 !important;
+}
+
+.tutorial-content li {
+  margin: 10px 0 !important;
+  line-height: 1.5 !important;
+}
+
+.tutorial-content code {
+  background: #f8f8f8 !important;
+  padding: 2px 6px !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 14px !important;
+}
+
+.spec-link {
+  color: #000 !important;
+  text-decoration: underline !important;
+  font-weight: 500 !important;
+}
+
+.spec-link:hover {
+  opacity: 0.7 !important;
+}
+
+/* Swiss Grid System for API Docs */
+.api-content {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+}
+
+/* Swiss International Style - Home Page */
+.swiss-home {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  background: white !important;
+  color: #000 !important;
+}
+
+.swiss-hero {
+  background: #000 !important;
+  color: #fff !important;
+  padding: 80px 60px 80px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+}
+
+.swiss-hero h1 {
+  font-size: 64px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  margin: 0 0 30px 0 !important;
+  text-transform: uppercase !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  color: #fff !important;
+}
+
+.swiss-subtitle {
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 50px 0 !important;
+  opacity: 0.8 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  color: #fff !important;
+  max-width: 600px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.swiss-stats {
+  margin: 50px 0 !important;
+}
+
+.stat-item {
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+.stat-number {
+  display: block !important;
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: #fff !important;
+  margin-bottom: 10px !important;
+}
+
+.stat-label {
+  font-size: 14px !important;
+  opacity: 0.8 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  color: #fff !important;
+  font-weight: 400 !important;
+}
+
+.swiss-actions {
+  margin-top: 50px !important;
+  display: flex !important;
+  gap: 20px !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+}
+
+.swiss-btn {
+  display: inline-block !important;
+  padding: 16px 32px !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  border: 2px solid transparent !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-btn-primary {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #fff !important;
+}
+
+.swiss-btn-primary:hover {
+  background: transparent !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.swiss-btn-secondary {
+  background: transparent !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.swiss-btn-secondary:hover {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #fff !important;
+}
+
+.swiss-content {
+  padding: 80px 60px !important;
+  background: white !important;
+}
+
+.swiss-section {
+  margin-bottom: 100px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  padding-bottom: 80px !important;
+}
+
+.swiss-section:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.swiss-section h2 {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 50px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-expression-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)) !important;
+  gap: 30px !important;
+}
+
+.swiss-expression-card {
+  background: white !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 30px !important;
+  transition: all 0.2s ease !important;
+}
+
+.swiss-expression-card:hover {
+  border-color: #000 !important;
+  transform: translateY(-2px) !important;
+}
+
+.swiss-expression-link {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: block !important;
+}
+
+.swiss-expression-card h3 {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 15px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-expression-name {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: #666 !important;
+  margin: 0 0 20px 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  letter-spacing: 0.02em !important;
+}
+
+.swiss-expression-description {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  color: #333 !important;
+  margin: 0 0 20px 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-expression-meta {
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #999 !important;
+  font-weight: 500 !important;
+}
+
+.swiss-feature-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 40px !important;
+}
+
+.swiss-feature-card {
+  background: #f8f8f8 !important;
+  padding: 40px 30px !important;
+  border-left: 4px solid #000 !important;
+}
+
+.swiss-feature-card h3 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 20px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-feature-card p {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: #333 !important;
+  margin: 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+/* Swiss International Style - Expression Show Page */
+.swiss-expression-show {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  background: white !important;
+  color: #000 !important;
+}
+
+.swiss-expression-header {
+  background: #000 !important;
+  color: #fff !important;
+  padding: 60px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.swiss-expression-header h1 {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 20px 0 !important;
+  color: #fff !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-package-name {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  color: #ccc !important;
+  margin: 0 0 30px 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  letter-spacing: 0.02em !important;
+}
+
+.swiss-stats-row {
+  display: flex !important;
+  gap: 30px !important;
+  flex-wrap: wrap !important;
+}
+
+.swiss-stat-item {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+  opacity: 0.8 !important;
+}
+
+.swiss-expression-content {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0 !important;
+  background: white !important;
+}
+
+.swiss-info-panel {
+  padding: 60px !important;
+  border-right: 1px solid #e0e0e0 !important;
+  background: #f8f8f8 !important;
+}
+
+.swiss-code-panel {
+  padding: 60px !important;
+  background: white !important;
+}
+
+.swiss-info-section {
+  margin-bottom: 50px !important;
+  padding-bottom: 40px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.swiss-info-section:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.swiss-info-section h2,
+.swiss-code-panel h2 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 20px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-info-section p {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: #333 !important;
+  margin: 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+.swiss-tag {
+  background: #000 !important;
+  color: #fff !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.swiss-version-selector {
+  margin-top: 15px !important;
+}
+
+.swiss-select {
+  width: 100% !important;
+  padding: 12px 16px !important;
+  border: 1px solid #000 !important;
+  background: white !important;
+  font-size: 14px !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  color: #000 !important;
+}
+
+.swiss-select:focus {
+  outline: none !important;
+  border-color: #000 !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swiss-code-block {
+  background: #f0f0f0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 30px !important;
+  margin: 20px 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  overflow-x: auto !important;
+}
+
+.swiss-code-block pre {
+  margin: 0 !important;
+  white-space: pre-wrap !important;
+}
+
+.swiss-code-block code {
+  background: none !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  color: #000 !important;
+}
+
+.swiss-code-meta {
+  margin-top: 30px !important;
+  padding: 20px 0 !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+.swiss-meta-item {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 15px !important;
+  padding-bottom: 15px !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.swiss-meta-item:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.swiss-meta-label {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #666 !important;
+  flex: 0 0 120px !important;
+}
+
+.swiss-meta-value {
+  font-size: 14px !important;
+  color: #000 !important;
+  font-weight: 400 !important;
+  text-align: right !important;
+  word-break: break-all !important;
+}
+
+.swiss-monospace {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 12px !important;
+}
+
+.swiss-no-data {
+  font-size: 16px !important;
+  color: #666 !important;
+  font-style: italic !important;
+  text-align: center !important;
+  padding: 40px !important;
+}
+
+.swiss-api-section {
+  background: #f8f8f8 !important;
+  padding: 60px !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+.swiss-api-section h2 {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 40px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+.swiss-code-examples {
+  display: grid !important;
+  gap: 40px !important;
+}
+
+.swiss-code-example h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 15px 0 !important;
+  color: #000 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .expression-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .expression-content {
+    grid-template-columns: 1fr;
+  }
+
+  .expression-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-form {
+    flex-direction: column;
+  }
+
+  .api-hero {
+    padding: 40px 30px !important;
+  }
+
+  .api-hero h1 {
+    font-size: 32px !important;
+  }
+
+  .api-content {
+    padding: 30px !important;
+  }
+
+  .api-section {
+    margin-bottom: 50px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .endpoint-group {
+    padding: 20px !important;
+  }
+
+  .method-url {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .method {
+    margin-bottom: 10px !important;
+    margin-right: 0 !important;
+  }
+
+  /* Swiss Home Responsive */
+  .swiss-hero {
+    padding: 50px 30px !important;
+  }
+
+  .swiss-hero h1 {
+    font-size: 40px !important;
+  }
+
+  .swiss-subtitle {
+    font-size: 16px !important;
+  }
+
+  .stat-number {
+    font-size: 36px !important;
+  }
+
+  .swiss-actions {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .swiss-content {
+    padding: 50px 30px !important;
+  }
+
+  .swiss-section {
+    margin-bottom: 60px !important;
+    padding-bottom: 50px !important;
+  }
+
+  .swiss-section h2 {
+    font-size: 24px !important;
+  }
+
+  .swiss-expression-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .swiss-feature-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .swiss-feature-card {
+    padding: 30px 20px !important;
+  }
+
+  /* Swiss Expression Show Responsive */
+  .swiss-expression-header {
+    padding: 40px 30px !important;
+  }
+
+  .swiss-expression-header h1 {
+    font-size: 32px !important;
+  }
+
+  .swiss-expression-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  .swiss-info-panel {
+    border-right: none !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    padding: 40px 30px !important;
+  }
+
+  .swiss-code-panel {
+    padding: 40px 30px !important;
+  }
+
+  .swiss-api-section {
+    padding: 40px 30px !important;
+  }
+
+  .swiss-stats-row {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  .swiss-meta-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .swiss-meta-value {
+    text-align: left !important;
+  }
+}
