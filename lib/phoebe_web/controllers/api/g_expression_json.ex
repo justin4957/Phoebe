@@ -1,5 +1,4 @@
 defmodule PhoebeWeb.API.GExpressionJSON do
-
   @doc """
   Renders a list of g_expressions.
   """
@@ -27,6 +26,7 @@ defmodule PhoebeWeb.API.GExpressionJSON do
       description: g_expression.description,
       expression_data: g_expression.expression_data,
       tags: g_expression.tags,
+      dependencies: g_expression.dependencies || %{},
       downloads_count: g_expression.downloads_count,
       inserted_at: g_expression.inserted_at,
       updated_at: g_expression.updated_at,
@@ -43,5 +43,6 @@ defmodule PhoebeWeb.API.GExpressionJSON do
       }
     end
   end
+
   defp render_versions(_), do: []
 end

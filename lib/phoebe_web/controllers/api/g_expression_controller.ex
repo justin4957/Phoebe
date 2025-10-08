@@ -6,12 +6,17 @@ defmodule PhoebeWeb.API.GExpressionController do
   action_fallback PhoebeWeb.FallbackController
 
   def index(conn, params) do
-    g_expressions = case params["search"] do
-      search when is_binary(search) and search != "" ->
-        Repository.search_g_expressions(search, page: safe_int(params["page"]), per_page: safe_int(params["per_page"]))
-      _ ->
-        Repository.list_g_expressions()
-    end
+    g_expressions =
+      case params["search"] do
+        search when is_binary(search) and search != "" ->
+          Repository.search_g_expressions(search,
+            page: safe_int(params["page"]),
+            per_page: safe_int(params["per_page"])
+          )
+
+        _ ->
+          Repository.list_g_expressions()
+      end
 
     render(conn, :index, g_expressions: g_expressions)
   end
@@ -31,6 +36,7 @@ defmodule PhoebeWeb.API.GExpressionController do
         conn
         |> put_status(:not_found)
         |> json(%{error: "G-Expression not found"})
+
       g_expression ->
         # Increment download counter
         Repository.increment_downloads(g_expression)
@@ -54,12 +60,42 @@ defmodule PhoebeWeb.API.GExpressionController do
     end
   end
 
+  def dependencies(conn, %{"name" => name}) do
+    case Repository.resolve_dependencies(name) do
+      {:ok, resolved} ->
+        json(conn, %{
+          data: %{
+            package: name,
+            resolved_dependencies: resolved
+          }
+        })
+
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{error: error})
+    end
+  end
+
+  def dependents(conn, %{"name" => name}) do
+    dependents = Repository.list_dependents(name)
+
+    json(conn, %{
+      data: %{
+        package: name,
+        dependents: dependents
+      }
+    })
+  end
+
   defp safe_int(nil), do: nil
+
   defp safe_int(str) when is_binary(str) do
     case Integer.parse(str) do
       {int, _} when int > 0 -> int
       _ -> nil
     end
   end
+
   defp safe_int(int) when is_integer(int), do: int
 end

@@ -16,11 +16,12 @@ defmodule PhoebeWeb.ExpressionLive.Index do
   def handle_params(params, _url, socket) do
     search_query = params["search"] || ""
 
-    expressions = if search_query != "" do
-      Repository.search_g_expressions(search_query)
-    else
-      Repository.list_g_expressions()
-    end
+    expressions =
+      if search_query != "" do
+        Repository.search_g_expressions(search_query)
+      else
+        Repository.list_g_expressions()
+      end
 
     {:noreply,
      socket
@@ -57,7 +58,7 @@ defmodule PhoebeWeb.ExpressionLive.Index do
     <div class="results-section">
       <%= if @search_query != "" do %>
         <p class="search-results">
-          Found <%= length(@expressions) %> results for "<%= @search_query %>"
+          Found {length(@expressions)} results for "{@search_query}"
         </p>
       <% end %>
 
@@ -65,16 +66,16 @@ defmodule PhoebeWeb.ExpressionLive.Index do
         <div :for={expression <- @expressions} class="expression-item">
           <.link navigate={~p"/expressions/#{expression.name}"} class="expression-link">
             <div class="expression-header">
-              <h3 class="expression-title"><%= expression.title %></h3>
-              <span class="expression-name">@<%= expression.name %></span>
+              <h3 class="expression-title">{expression.title}</h3>
+              <span class="expression-name">@{expression.name}</span>
             </div>
-            <p class="expression-description"><%= expression.description %></p>
+            <p class="expression-description">{expression.description}</p>
             <div class="expression-meta">
               <div class="tags">
-                <span :for={tag <- expression.tags} class="tag"><%= tag %></span>
+                <span :for={tag <- expression.tags} class="tag">{tag}</span>
               </div>
               <div class="stats">
-                <span class="downloads"><%= expression.downloads_count %> downloads</span>
+                <span class="downloads">{expression.downloads_count} downloads</span>
               </div>
             </div>
           </.link>
@@ -85,7 +86,9 @@ defmodule PhoebeWeb.ExpressionLive.Index do
             <%= if @search_query != "" do %>
               <h3>No expressions found</h3>
               <p>No G-Expressions match your search query.</p>
-              <.link navigate={~p"/expressions"} class="btn btn-secondary">View All Expressions</.link>
+              <.link navigate={~p"/expressions"} class="btn btn-secondary">
+                View All Expressions
+              </.link>
             <% else %>
               <h3>No expressions available</h3>
               <p>There are no G-Expressions in the repository yet.</p>

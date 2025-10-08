@@ -29,14 +29,16 @@ defmodule Phoebe.CLI.FileManager do
     filename = "#{@temp_prefix}#{timestamp}_#{random_suffix}#{@temp_suffix}"
     file_path = Path.join(temp_dir, filename)
 
-    content = case Keyword.get(opts, :format, "pretty") do
-      "compact" -> Jason.encode!(gexpr)
-      _ -> Jason.encode!(gexpr, pretty: true)
-    end
+    content =
+      case Keyword.get(opts, :format, "pretty") do
+        "compact" -> Jason.encode!(gexpr)
+        _ -> Jason.encode!(gexpr, pretty: true)
+      end
 
     case File.write(file_path, content) do
       :ok ->
         {:ok, file_path}
+
       {:error, reason} ->
         {:error, "Failed to create temp file: #{inspect(reason)}"}
     end
@@ -50,14 +52,16 @@ defmodule Phoebe.CLI.FileManager do
 
     case File.ls(temp_dir) do
       {:ok, files} ->
-        temp_files = files
-        |> Enum.filter(&String.starts_with?(&1, @temp_prefix))
-        |> Enum.sort()
+        temp_files =
+          files
+          |> Enum.filter(&String.starts_with?(&1, @temp_prefix))
+          |> Enum.sort()
 
         print_temp_files_list(temp_files, temp_dir)
 
       {:error, :enoent} ->
         IO.puts("No temporary directory found.")
+
       {:error, reason} ->
         IO.puts("Error listing temp files: #{inspect(reason)}")
     end
@@ -74,18 +78,23 @@ defmodule Phoebe.CLI.FileManager do
 
     case File.ls(temp_dir) do
       {:ok, files} ->
-        temp_files = files
-        |> Enum.filter(&String.starts_with?(&1, @temp_prefix))
+        temp_files =
+          files
+          |> Enum.filter(&String.starts_with?(&1, @temp_prefix))
 
-        {removed, kept} = Enum.split_with(temp_files, fn file ->
-          file_path = Path.join(temp_dir, file)
-          case File.stat(file_path) do
-            {:ok, %{mtime: mtime}} ->
-              file_time_ms = :calendar.datetime_to_gregorian_seconds(mtime) * 1000
-              current_time - file_time_ms > max_age_ms
-            _ -> false
-          end
-        end)
+        {removed, kept} =
+          Enum.split_with(temp_files, fn file ->
+            file_path = Path.join(temp_dir, file)
+
+            case File.stat(file_path) do
+              {:ok, %{mtime: mtime}} ->
+                file_time_ms = :calendar.datetime_to_gregorian_seconds(mtime) * 1000
+                current_time - file_time_ms > max_age_ms
+
+              _ ->
+                false
+            end
+          end)
 
         Enum.each(removed, fn file ->
           file_path = Path.join(temp_dir, file)
@@ -96,6 +105,7 @@ defmodule Phoebe.CLI.FileManager do
 
       {:error, :enoent} ->
         IO.puts("No temporary directory found.")
+
       {:error, reason} ->
         IO.puts("Error cleaning temp files: #{inspect(reason)}")
     end
@@ -106,15 +116,18 @@ defmodule Phoebe.CLI.FileManager do
   """
   def save_temp_file([temp_file, name], opts \\ []) do
     temp_dir = get_temp_dir(opts)
-    temp_path = if String.starts_with?(temp_file, "/") do
-      temp_file
-    else
-      Path.join(temp_dir, temp_file)
-    end
+
+    temp_path =
+      if String.starts_with?(temp_file, "/") do
+        temp_file
+      else
+        Path.join(temp_dir, temp_file)
+      end
 
     case File.read(temp_path) do
       {:ok, content} ->
         save_permanent_content(content, name, opts)
+
       {:error, reason} ->
         IO.puts("Error reading temp file: #{inspect(reason)}")
     end
@@ -131,6 +144,7 @@ defmodule Phoebe.CLI.FileManager do
     case File.read(file_path) do
       {:ok, content} ->
         save_permanent_content(content, name, opts)
+
       {:error, reason} ->
         {:error, "Failed to read file: #{inspect(reason)}"}
     end
@@ -152,6 +166,7 @@ defmodule Phoebe.CLI.FileManager do
       case IO.gets("File '#{safe_name}' already exists. Overwrite? (y/N): ") do
         response when response in ["y\n", "Y\n", "yes\n", "YES\n"] ->
           write_permanent_file(file_path, content)
+
         _ ->
           {:error, "Save cancelled"}
       end
@@ -171,8 +186,10 @@ defmodule Phoebe.CLI.FileManager do
     case File.read(file_path) do
       {:ok, content} ->
         {:ok, content}
+
       {:error, :enoent} ->
         {:error, "File '#{name}' not found"}
+
       {:error, reason} ->
         {:error, "Failed to load file: #{inspect(reason)}"}
     end
@@ -186,15 +203,17 @@ defmodule Phoebe.CLI.FileManager do
 
     case File.ls(save_dir) do
       {:ok, files} ->
-        json_files = files
-        |> Enum.filter(&String.ends_with?(&1, ".json"))
-        |> Enum.map(&String.replace_suffix(&1, ".json", ""))
-        |> Enum.sort()
+        json_files =
+          files
+          |> Enum.filter(&String.ends_with?(&1, ".json"))
+          |> Enum.map(&String.replace_suffix(&1, ".json", ""))
+          |> Enum.sort()
 
         print_permanent_files_list(json_files, save_dir)
 
       {:error, :enoent} ->
         IO.puts("No saved files directory found.")
+
       {:error, reason} ->
         IO.puts("Error listing saved files: #{inspect(reason)}")
     end
@@ -211,8 +230,10 @@ defmodule Phoebe.CLI.FileManager do
     case File.rm(file_path) do
       :ok ->
         IO.puts("Deleted '#{name}'")
+
       {:error, :enoent} ->
         IO.puts("File '#{name}' not found")
+
       {:error, reason} ->
         IO.puts("Error deleting file: #{inspect(reason)}")
     end
@@ -225,6 +246,7 @@ defmodule Phoebe.CLI.FileManager do
     case create_temp_file(gexpr, opts) do
       {:ok, temp_path} ->
         editor = get_editor(opts)
+
         case System.cmd(editor, [temp_path]) do
           {_, 0} ->
             # Re-read the file after editing
@@ -233,15 +255,19 @@ defmodule Phoebe.CLI.FileManager do
                 case Jason.decode(content) do
                   {:ok, edited_gexpr} ->
                     {:ok, {edited_gexpr, temp_path}}
+
                   {:error, json_error} ->
                     {:error, "Invalid JSON after editing: #{inspect(json_error)}"}
                 end
+
               {:error, reason} ->
                 {:error, "Failed to read edited file: #{inspect(reason)}"}
             end
+
           {output, exit_code} ->
             {:error, "Editor exited with code #{exit_code}: #{output}"}
         end
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -268,8 +294,10 @@ defmodule Phoebe.CLI.FileManager do
         File.write!(metadata_path, Jason.encode!(metadata, pretty: true))
 
         {:ok, workspace_dir}
+
       {:error, :eexist} ->
         {:error, "Workspace '#{name}' already exists"}
+
       {:error, reason} ->
         {:error, "Failed to create workspace: #{inspect(reason)}"}
     end
@@ -293,7 +321,9 @@ defmodule Phoebe.CLI.FileManager do
         else
           {:ok, temp_path}
         end
-      error -> error
+
+      error ->
+        error
     end
   end
 
@@ -308,6 +338,7 @@ defmodule Phoebe.CLI.FileManager do
     case File.mkdir_p(session_dir) do
       :ok ->
         session_file = Path.join(session_dir, "session.json")
+
         session_data = %{
           "name" => session_name,
           "created_at" => DateTime.utc_now() |> DateTime.to_iso8601(),
@@ -319,7 +350,9 @@ defmodule Phoebe.CLI.FileManager do
           :ok -> {:ok, session_dir}
           {:error, reason} -> {:error, "Failed to create session file: #{inspect(reason)}"}
         end
-      {:error, reason} -> {:error, "Failed to create session directory: #{inspect(reason)}"}
+
+      {:error, reason} ->
+        {:error, "Failed to create session directory: #{inspect(reason)}"}
     end
   end
 
@@ -352,11 +385,17 @@ defmodule Phoebe.CLI.FileManager do
 
                 File.write(session_file, Jason.encode!(updated_session, pretty: true))
                 {:ok, expr_path}
-              {:error, reason} -> {:error, "Failed to save expression: #{inspect(reason)}"}
+
+              {:error, reason} ->
+                {:error, "Failed to save expression: #{inspect(reason)}"}
             end
-          {:error, reason} -> {:error, "Invalid session file: #{inspect(reason)}"}
+
+          {:error, reason} ->
+            {:error, "Invalid session file: #{inspect(reason)}"}
         end
-      {:error, reason} -> {:error, "Failed to read session: #{inspect(reason)}"}
+
+      {:error, reason} ->
+        {:error, "Failed to read session: #{inspect(reason)}"}
     end
   end
 
@@ -368,24 +407,28 @@ defmodule Phoebe.CLI.FileManager do
 
     case File.ls(temp_dir) do
       {:ok, files} ->
-        sessions = files
-        |> Enum.filter(&String.starts_with?(&1, "session_"))
-        |> Enum.map(fn session_dir ->
-          session_path = Path.join(temp_dir, session_dir)
-          session_file = Path.join(session_path, "session.json")
+        sessions =
+          files
+          |> Enum.filter(&String.starts_with?(&1, "session_"))
+          |> Enum.map(fn session_dir ->
+            session_path = Path.join(temp_dir, session_dir)
+            session_file = Path.join(session_path, "session.json")
 
-          case File.read(session_file) do
-            {:ok, content} ->
-              case Jason.decode(content) do
-                {:ok, data} -> {session_dir, data}
-                _ -> {session_dir, %{"name" => "Invalid", "expressions" => []}}
-              end
-            _ -> {session_dir, %{"name" => "Error", "expressions" => []}}
-          end
-        end)
-        |> Enum.sort_by(fn {_, data} -> data["created_at"] || "" end, :desc)
+            case File.read(session_file) do
+              {:ok, content} ->
+                case Jason.decode(content) do
+                  {:ok, data} -> {session_dir, data}
+                  _ -> {session_dir, %{"name" => "Invalid", "expressions" => []}}
+                end
+
+              _ ->
+                {session_dir, %{"name" => "Error", "expressions" => []}}
+            end
+          end)
+          |> Enum.sort_by(fn {_, data} -> data["created_at"] || "" end, :desc)
 
         print_sessions_list(sessions, temp_dir)
+
       {:error, reason} ->
         IO.puts("Error listing sessions: #{inspect(reason)}")
     end
@@ -413,11 +456,13 @@ defmodule Phoebe.CLI.FileManager do
   def promote_to_permanent(working_file, name, opts \\ []) do
     temp_dir = get_temp_dir(opts)
     working_dir = Path.join(temp_dir, "working")
-    working_path = if String.starts_with?(working_file, "/") do
-      working_file
-    else
-      Path.join(working_dir, working_file)
-    end
+
+    working_path =
+      if String.starts_with?(working_file, "/") do
+        working_file
+      else
+        Path.join(working_dir, working_file)
+      end
 
     case File.read(working_path) do
       {:ok, content} ->
@@ -425,8 +470,11 @@ defmodule Phoebe.CLI.FileManager do
           {:ok, permanent_path} ->
             IO.puts("✓ Promoted '#{working_file}' to permanent storage as '#{name}'")
             {:ok, permanent_path}
-          error -> error
+
+          error ->
+            error
         end
+
       {:error, reason} ->
         {:error, "Failed to read working file: #{inspect(reason)}"}
     end
@@ -441,19 +489,26 @@ defmodule Phoebe.CLI.FileManager do
 
     case File.ls(working_dir) do
       {:ok, files} ->
-        json_files = files
-        |> Enum.filter(&String.ends_with?(&1, ".json"))
-        |> Enum.sort_by(fn file ->
-          file_path = Path.join(working_dir, file)
-          case File.stat(file_path) do
-            {:ok, %{mtime: mtime}} -> mtime
-            _ -> {0, 0, 0}
-          end
-        end, :desc)
+        json_files =
+          files
+          |> Enum.filter(&String.ends_with?(&1, ".json"))
+          |> Enum.sort_by(
+            fn file ->
+              file_path = Path.join(working_dir, file)
+
+              case File.stat(file_path) do
+                {:ok, %{mtime: mtime}} -> mtime
+                _ -> {0, 0, 0}
+              end
+            end,
+            :desc
+          )
 
         print_working_files_list(json_files, working_dir)
+
       {:error, :enoent} ->
         IO.puts("No working directory found. Create some expressions first!")
+
       {:error, reason} ->
         IO.puts("Error listing working files: #{inspect(reason)}")
     end
@@ -480,9 +535,9 @@ defmodule Phoebe.CLI.FileManager do
 
   defp get_editor(opts) do
     Keyword.get(opts, :editor) ||
-    System.get_env("EDITOR") ||
-    System.get_env("VISUAL") ||
-    default_editor()
+      System.get_env("EDITOR") ||
+      System.get_env("VISUAL") ||
+      default_editor()
   end
 
   defp default_editor do
@@ -492,11 +547,11 @@ defmodule Phoebe.CLI.FileManager do
     end
   end
 
-
   defp write_permanent_file(file_path, content) do
     case File.write(file_path, content) do
       :ok ->
         {:ok, file_path}
+
       {:error, reason} ->
         {:error, "Failed to save file: #{inspect(reason)}"}
     end
@@ -512,11 +567,16 @@ defmodule Phoebe.CLI.FileManager do
 
       Enum.each(files, fn file ->
         file_path = Path.join(temp_dir, file)
+
         case File.stat(file_path) do
           {:ok, %{size: size, mtime: mtime}} ->
             time_str = format_time(mtime)
             size_str = format_size(size)
-            IO.puts("#{String.pad_trailing(file, 35)} #{String.pad_trailing(size_str, 10)} #{time_str}")
+
+            IO.puts(
+              "#{String.pad_trailing(file, 35)} #{String.pad_trailing(size_str, 10)} #{time_str}"
+            )
+
           _ ->
             IO.puts("#{file} (stat failed)")
         end
@@ -538,26 +598,35 @@ defmodule Phoebe.CLI.FileManager do
 
       Enum.each(files, fn name ->
         file_path = Path.join(save_dir, "#{name}.json")
+
         case File.stat(file_path) do
           {:ok, %{size: size, mtime: mtime}} ->
             time_str = format_time(mtime)
             size_str = format_size(size)
 
             # Try to read and analyze the expression
-            analysis = case File.read(file_path) do
-              {:ok, content} ->
-                case Jason.decode(content) do
-                  {:ok, gexpr} ->
-                    case gexpr["g"] do
-                      type when is_binary(type) -> "[#{type}]"
-                      _ -> "[unknown]"
-                    end
-                  _ -> "[invalid]"
-                end
-              _ -> "[error]"
-            end
+            analysis =
+              case File.read(file_path) do
+                {:ok, content} ->
+                  case Jason.decode(content) do
+                    {:ok, gexpr} ->
+                      case gexpr["g"] do
+                        type when is_binary(type) -> "[#{type}]"
+                        _ -> "[unknown]"
+                      end
 
-            IO.puts("#{String.pad_trailing(name, 25)} #{String.pad_trailing(analysis, 12)} #{String.pad_trailing(size_str, 10)} #{time_str}")
+                    _ ->
+                      "[invalid]"
+                  end
+
+                _ ->
+                  "[error]"
+              end
+
+            IO.puts(
+              "#{String.pad_trailing(name, 25)} #{String.pad_trailing(analysis, 12)} #{String.pad_trailing(size_str, 10)} #{time_str}"
+            )
+
           _ ->
             IO.puts("#{name} (stat failed)")
         end
@@ -571,7 +640,7 @@ defmodule Phoebe.CLI.FileManager do
 
   defp format_time({{year, month, day}, {hour, minute, second}}) do
     "#{year}-#{String.pad_leading("#{month}", 2, "0")}-#{String.pad_leading("#{day}", 2, "0")} " <>
-    "#{String.pad_leading("#{hour}", 2, "0")}:#{String.pad_leading("#{minute}", 2, "0")}:#{String.pad_leading("#{second}", 2, "0")}"
+      "#{String.pad_leading("#{hour}", 2, "0")}:#{String.pad_leading("#{minute}", 2, "0")}:#{String.pad_leading("#{second}", 2, "0")}"
   end
 
   defp format_size(size) when size < 1024, do: "#{size}B"
@@ -579,33 +648,41 @@ defmodule Phoebe.CLI.FileManager do
   defp format_size(size), do: "#{Float.round(size / (1024 * 1024), 1)}MB"
 
   defp generate_auto_filename(gexpr, opts) do
-    base_name = case gexpr do
-      %{"g" => "lit", "v" => value} ->
-        "lit_#{sanitize_value_for_filename(value)}"
-      %{"g" => "ref", "n" => name} ->
-        "ref_#{sanitize_filename(name)}"
-      %{"g" => "lam", "p" => params} when is_list(params) ->
-        param_str = Enum.join(params, "_")
-        "lambda_#{sanitize_filename(param_str)}"
-      %{"g" => "vec", "v" => items} when is_list(items) ->
-        "vector_#{length(items)}_items"
-      %{"g" => "app"} ->
-        "application"
-      %{"g" => type} ->
-        "#{type}_expr"
-      _ ->
-        "unknown_expr"
-    end
+    base_name =
+      case gexpr do
+        %{"g" => "lit", "v" => value} ->
+          "lit_#{sanitize_value_for_filename(value)}"
+
+        %{"g" => "ref", "n" => name} ->
+          "ref_#{sanitize_filename(name)}"
+
+        %{"g" => "lam", "p" => params} when is_list(params) ->
+          param_str = Enum.join(params, "_")
+          "lambda_#{sanitize_filename(param_str)}"
+
+        %{"g" => "vec", "v" => items} when is_list(items) ->
+          "vector_#{length(items)}_items"
+
+        %{"g" => "app"} ->
+          "application"
+
+        %{"g" => type} ->
+          "#{type}_expr"
+
+        _ ->
+          "unknown_expr"
+      end
 
     # Add timestamp to make unique
     timestamp = :os.system_time(:millisecond)
     custom_name = Keyword.get(opts, :name)
 
-    filename = if custom_name do
-      "#{sanitize_filename(custom_name)}_#{timestamp}.json"
-    else
-      "#{base_name}_#{timestamp}.json"
-    end
+    filename =
+      if custom_name do
+        "#{sanitize_filename(custom_name)}_#{timestamp}.json"
+      else
+        "#{base_name}_#{timestamp}.json"
+      end
 
     filename
   end
@@ -632,7 +709,9 @@ defmodule Phoebe.CLI.FileManager do
         expr_count = length(data["expressions"] || [])
         created = data["created_at"] || "Unknown"
 
-        IO.puts("#{String.pad_trailing(name, 20)} #{String.pad_trailing("#{expr_count} exprs", 12)} #{created}")
+        IO.puts(
+          "#{String.pad_trailing(name, 20)} #{String.pad_trailing("#{expr_count} exprs", 12)} #{created}"
+        )
       end)
 
       IO.puts(String.duplicate("=", 70))
@@ -651,23 +730,31 @@ defmodule Phoebe.CLI.FileManager do
 
       Enum.each(files, fn file ->
         file_path = Path.join(working_dir, file)
+
         case File.stat(file_path) do
           {:ok, %{size: size, mtime: mtime}} ->
             time_str = format_time(mtime)
             size_str = format_size(size)
 
             # Try to determine expression type
-            type_info = case File.read(file_path) do
-              {:ok, content} ->
-                case Jason.decode(content) do
-                  {:ok, gexpr} -> "[#{gexpr["g"] || "unknown"}]"
-                  _ -> "[invalid]"
-                end
-              _ -> "[error]"
-            end
+            type_info =
+              case File.read(file_path) do
+                {:ok, content} ->
+                  case Jason.decode(content) do
+                    {:ok, gexpr} -> "[#{gexpr["g"] || "unknown"}]"
+                    _ -> "[invalid]"
+                  end
+
+                _ ->
+                  "[error]"
+              end
 
             display_name = String.replace_suffix(file, ".json", "")
-            IO.puts("#{String.pad_trailing(display_name, 30)} #{String.pad_trailing(type_info, 12)} #{String.pad_trailing(size_str, 8)} #{time_str}")
+
+            IO.puts(
+              "#{String.pad_trailing(display_name, 30)} #{String.pad_trailing(type_info, 12)} #{String.pad_trailing(size_str, 8)} #{time_str}"
+            )
+
           _ ->
             IO.puts("#{file} (stat failed)")
         end

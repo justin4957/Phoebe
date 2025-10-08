@@ -11,6 +11,7 @@ defmodule PhoebeWeb.API.VersionController do
         conn
         |> put_status(:not_found)
         |> json(%{error: "G-Expression not found"})
+
       g_expression ->
         versions = Repository.list_versions(g_expression)
         render(conn, :index, versions: versions)
@@ -23,11 +24,15 @@ defmodule PhoebeWeb.API.VersionController do
         conn
         |> put_status(:not_found)
         |> json(%{error: "G-Expression not found"})
+
       g_expression ->
         with {:ok, version} <- Repository.create_version(g_expression, version_params) do
           conn
           |> put_status(:created)
-          |> put_resp_header("location", ~p"/api/v1/expressions/#{name}/versions/#{version.version}")
+          |> put_resp_header(
+            "location",
+            ~p"/api/v1/expressions/#{name}/versions/#{version.version}"
+          )
           |> render(:show, version: version)
         end
     end
@@ -39,6 +44,7 @@ defmodule PhoebeWeb.API.VersionController do
         conn
         |> put_status(:not_found)
         |> json(%{error: "Version not found"})
+
       version ->
         render(conn, :show, version: version)
     end
@@ -50,6 +56,7 @@ defmodule PhoebeWeb.API.VersionController do
         conn
         |> put_status(:not_found)
         |> json(%{error: "Version not found"})
+
       version ->
         with {:ok, _} <- Repository.delete_version(version) do
           send_resp(conn, :no_content, "")

@@ -24,7 +24,8 @@ defmodule PhoebeWeb.ExpressionLive.Show do
 
   @impl true
   def handle_event("select_version", %{"version" => version_string}, socket) do
-    selected_version = Enum.find(socket.assigns.expression.versions, &(&1.version == version_string))
+    selected_version =
+      Enum.find(socket.assigns.expression.versions, &(&1.version == version_string))
 
     {:noreply, assign(socket, :selected_version, selected_version)}
   end
@@ -34,11 +35,11 @@ defmodule PhoebeWeb.ExpressionLive.Show do
     ~H"""
     <div class="swiss-expression-show">
       <div class="swiss-expression-header">
-        <h1><%= @expression.title %></h1>
-        <p class="swiss-package-name">@<%= @expression.name %></p>
+        <h1>{@expression.title}</h1>
+        <p class="swiss-package-name">@{@expression.name}</p>
         <div class="swiss-stats-row">
-          <span class="swiss-stat-item"><%= @expression.downloads_count %> DOWNLOADS</span>
-          <span class="swiss-stat-item"><%= length(@expression.versions) %> VERSIONS</span>
+          <span class="swiss-stat-item">{@expression.downloads_count} DOWNLOADS</span>
+          <span class="swiss-stat-item">{length(@expression.versions)} VERSIONS</span>
         </div>
       </div>
 
@@ -46,14 +47,14 @@ defmodule PhoebeWeb.ExpressionLive.Show do
         <div class="swiss-info-panel">
           <div class="swiss-info-section">
             <h2>DESCRIPTION</h2>
-            <p><%= @expression.description %></p>
+            <p>{@expression.description}</p>
           </div>
 
           <%= if @expression.tags != [] do %>
             <div class="swiss-info-section">
               <h2>TAGS</h2>
               <div class="swiss-tags">
-                <span :for={tag <- @expression.tags} class="swiss-tag"><%= tag %></span>
+                <span :for={tag <- @expression.tags} class="swiss-tag">{tag}</span>
               </div>
             </div>
           <% end %>
@@ -67,7 +68,7 @@ defmodule PhoebeWeb.ExpressionLive.Show do
                   value={version.version}
                   selected={@selected_version && @selected_version.version == version.version}
                 >
-                  <%= version.version %> - <%= Calendar.strftime(version.inserted_at, "%B %d, %Y") %>
+                  {version.version} - {Calendar.strftime(version.inserted_at, "%B %d, %Y")}
                 </option>
               </select>
             </div>
@@ -83,15 +84,17 @@ defmodule PhoebeWeb.ExpressionLive.Show do
             <div class="swiss-code-meta">
               <div class="swiss-meta-item">
                 <span class="swiss-meta-label">VERSION</span>
-                <span class="swiss-meta-value"><%= @selected_version.version %></span>
+                <span class="swiss-meta-value">{@selected_version.version}</span>
               </div>
               <div class="swiss-meta-item">
                 <span class="swiss-meta-label">CHECKSUM</span>
-                <span class="swiss-meta-value swiss-monospace"><%= @selected_version.checksum %></span>
+                <span class="swiss-meta-value swiss-monospace">{@selected_version.checksum}</span>
               </div>
               <div class="swiss-meta-item">
                 <span class="swiss-meta-label">PUBLISHED</span>
-                <span class="swiss-meta-value"><%= Calendar.strftime(@selected_version.inserted_at, "%B %d, %Y at %I:%M %p") %></span>
+                <span class="swiss-meta-value">
+                  {Calendar.strftime(@selected_version.inserted_at, "%B %d, %Y at %I:%M %p")}
+                </span>
               </div>
             </div>
           <% else %>

@@ -26,6 +26,7 @@ defmodule Phoebe.CLI.Validator do
     def valid?(%{"g" => "app", "v" => %{"fn" => fn_expr}}) do
       Phoebe.CLI.Validator.is_valid_gexpression?(fn_expr)
     end
+
     def valid?(_), do: false
   end
 
@@ -34,6 +35,7 @@ defmodule Phoebe.CLI.Validator do
         when is_list(params) do
       Enum.all?(params, &is_binary/1) and Phoebe.CLI.Validator.is_valid_gexpression?(body)
     end
+
     def valid?(_), do: false
   end
 
@@ -41,6 +43,7 @@ defmodule Phoebe.CLI.Validator do
     def valid?(%{"g" => "fix", "v" => v}) do
       Phoebe.CLI.Validator.is_valid_gexpression?(v)
     end
+
     def valid?(_), do: false
   end
 
@@ -48,8 +51,9 @@ defmodule Phoebe.CLI.Validator do
     def valid?(%{"g" => "match", "v" => %{"expr" => expr, "branches" => branches}})
         when is_list(branches) do
       Phoebe.CLI.Validator.is_valid_gexpression?(expr) and
-      Enum.all?(branches, &Phoebe.CLI.Validator.valid_branch?/1)
+        Enum.all?(branches, &Phoebe.CLI.Validator.valid_branch?/1)
     end
+
     def valid?(_), do: false
   end
 
@@ -80,11 +84,14 @@ defmodule Phoebe.CLI.Validator do
   @doc """
   Validates a complete expression package with metadata.
   """
-  def validate_expression_package(%{"name" => name, "title" => title, "expression_data" => gexpr} = package)
+  def validate_expression_package(
+        %{"name" => name, "title" => title, "expression_data" => gexpr} = package
+      )
       when is_binary(name) and is_binary(title) do
     case validate_gexpression(gexpr) do
       {:ok, validated_gexpr} ->
         {:ok, Map.put(package, "expression_data", validated_gexpr)}
+
       {:error, reason} ->
         {:error, "Invalid expression_data: #{reason}"}
     end
@@ -95,6 +102,7 @@ defmodule Phoebe.CLI.Validator do
     case validate_gexpression(gexpr) do
       {:ok, validated_gexpr} ->
         {:ok, Map.put(package, "gexpression", validated_gexpr)}
+
       {:error, reason} ->
         {:error, "Invalid gexpression: #{reason}"}
     end
@@ -135,7 +143,9 @@ defmodule Phoebe.CLI.Validator do
           complexity: calculate_complexity(valid_gexpr),
           depth: calculate_depth(valid_gexpr)
         }
+
         {:ok, analysis}
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -157,36 +167,62 @@ defmodule Phoebe.CLI.Validator do
     Enum.all?(items, fn item ->
       case item do
         %{"g" => _} -> is_valid_gexpression?(item)
-        _ -> true  # Allow non-gexpression items in vectors
+        # Allow non-gexpression items in vectors
+        _ -> true
       end
     end)
   end
 
   defp valid_application_args?(%{"fn" => fn_expr} = app_data) do
     fn_valid = is_valid_gexpression?(fn_expr)
-    args_valid = case Map.get(app_data, "args") do
-      nil -> true  # Args are optional
-      args -> is_valid_gexpression?(args)
-    end
+
+    args_valid =
+      case Map.get(app_data, "args") do
+        # Args are optional
+        nil -> true
+        args -> is_valid_gexpression?(args)
+      end
+
     fn_valid and args_valid
   end
+
   defp valid_application_args?(_), do: false
 
   def valid_branch?(%{"pattern" => _, "result" => result}) do
     is_valid_gexpression?(result)
   end
+
   def valid_branch?(_), do: false
 
   defp analyze_structure(%{"g" => g_type, "v" => v}) do
     case g_type do
-      "lit" -> %{type: :literal, value_type: typeof(v)}
-      "ref" -> %{type: :reference, name: v}
-      "vec" -> %{type: :vector, length: length(v), elements: Enum.map(v, &analyze_element/1)}
-      "app" -> %{type: :application, function: analyze_element(v["fn"]), args: analyze_element(v["args"])}
-      "lam" -> %{type: :lambda, arity: length(v["params"]), params: v["params"]}
-      "fix" -> %{type: :fixpoint, expr: analyze_element(v)}
-      "match" -> %{type: :match, branches: length(v["branches"])}
-      _ -> %{type: :unknown}
+      "lit" ->
+        %{type: :literal, value_type: typeof(v)}
+
+      "ref" ->
+        %{type: :reference, name: v}
+
+      "vec" ->
+        %{type: :vector, length: length(v), elements: Enum.map(v, &analyze_element/1)}
+
+      "app" ->
+        %{
+          type: :application,
+          function: analyze_element(v["fn"]),
+          args: analyze_element(v["args"])
+        }
+
+      "lam" ->
+        %{type: :lambda, arity: length(v["params"]), params: v["params"]}
+
+      "fix" ->
+        %{type: :fixpoint, expr: analyze_element(v)}
+
+      "match" ->
+        %{type: :match, branches: length(v["branches"])}
+
+      _ ->
+        %{type: :unknown}
     end
   end
 
@@ -195,26 +231,48 @@ defmodule Phoebe.CLI.Validator do
 
   defp calculate_complexity(%{"g" => g_type, "v" => v}) do
     base_complexity = 1
+
     case g_type do
-      "lit" -> base_complexity
-      "ref" -> base_complexity
-      "vec" -> base_complexity + Enum.sum(Enum.map(v, &calculate_element_complexity/1))
+      "lit" ->
+        base_complexity
+
+      "ref" ->
+        base_complexity
+
+      "vec" ->
+        base_complexity + Enum.sum(Enum.map(v, &calculate_element_complexity/1))
+
       "app" ->
         fn_complexity = calculate_element_complexity(v["fn"])
-        args_complexity = case v["args"] do
-          nil -> 0
-          args -> calculate_element_complexity(args)
-        end
+
+        args_complexity =
+          case v["args"] do
+            nil -> 0
+            args -> calculate_element_complexity(args)
+          end
+
         base_complexity + fn_complexity + args_complexity
-      "lam" -> base_complexity + calculate_element_complexity(v["body"])
-      "fix" -> base_complexity + calculate_element_complexity(v)
+
+      "lam" ->
+        base_complexity + calculate_element_complexity(v["body"])
+
+      "fix" ->
+        base_complexity + calculate_element_complexity(v)
+
       "match" ->
         expr_complexity = calculate_element_complexity(v["expr"])
-        branches_complexity = Enum.sum(Enum.map(v["branches"], fn branch ->
-          calculate_element_complexity(branch["result"])
-        end))
+
+        branches_complexity =
+          Enum.sum(
+            Enum.map(v["branches"], fn branch ->
+              calculate_element_complexity(branch["result"])
+            end)
+          )
+
         base_complexity + expr_complexity + branches_complexity
-      _ -> base_complexity
+
+      _ ->
+        base_complexity
     end
   end
 
@@ -223,25 +281,44 @@ defmodule Phoebe.CLI.Validator do
 
   defp calculate_depth(%{"g" => g_type, "v" => v}) do
     case g_type do
-      "lit" -> 1
-      "ref" -> 1
-      "vec" -> 1 + (v |> Enum.map(&calculate_element_depth/1) |> Enum.max(default: 0))
+      "lit" ->
+        1
+
+      "ref" ->
+        1
+
+      "vec" ->
+        1 + (v |> Enum.map(&calculate_element_depth/1) |> Enum.max(default: 0))
+
       "app" ->
         fn_depth = calculate_element_depth(v["fn"])
-        args_depth = case v["args"] do
-          nil -> 0
-          args -> calculate_element_depth(args)
-        end
+
+        args_depth =
+          case v["args"] do
+            nil -> 0
+            args -> calculate_element_depth(args)
+          end
+
         1 + max(fn_depth, args_depth)
-      "lam" -> 1 + calculate_element_depth(v["body"])
-      "fix" -> 1 + calculate_element_depth(v)
+
+      "lam" ->
+        1 + calculate_element_depth(v["body"])
+
+      "fix" ->
+        1 + calculate_element_depth(v)
+
       "match" ->
         expr_depth = calculate_element_depth(v["expr"])
-        max_branch_depth = v["branches"]
-                          |> Enum.map(fn branch -> calculate_element_depth(branch["result"]) end)
-                          |> Enum.max(default: 0)
+
+        max_branch_depth =
+          v["branches"]
+          |> Enum.map(fn branch -> calculate_element_depth(branch["result"]) end)
+          |> Enum.max(default: 0)
+
         1 + max(expr_depth, max_branch_depth)
-      _ -> 1
+
+      _ ->
+        1
     end
   end
 
@@ -287,16 +364,18 @@ defmodule Phoebe.CLI.Validator do
   defp build_vector_error(%{"v" => v}) when not is_list(v) do
     "Vector expression 'v' field must be a list"
   end
+
   defp build_vector_error(%{"v" => items}) do
-    invalid_items = items
-    |> Enum.with_index()
-    |> Enum.filter(fn {item, _idx} ->
-      case item do
-        %{"g" => _} -> not is_valid_gexpression?(item)
-        _ -> false
-      end
-    end)
-    |> Enum.map(fn {_item, idx} -> "item #{idx}" end)
+    invalid_items =
+      items
+      |> Enum.with_index()
+      |> Enum.filter(fn {item, _idx} ->
+        case item do
+          %{"g" => _} -> not is_valid_gexpression?(item)
+          _ -> false
+        end
+      end)
+      |> Enum.map(fn {_item, idx} -> "item #{idx}" end)
 
     case invalid_items do
       [] -> "Vector contains invalid G-expressions"
@@ -316,6 +395,7 @@ defmodule Phoebe.CLI.Validator do
         "Application expression structure is invalid"
     end
   end
+
   defp build_application_error(_) do
     "Application expression missing 'fn' field in 'v'"
   end
@@ -335,6 +415,7 @@ defmodule Phoebe.CLI.Validator do
         "Lambda expression structure is invalid"
     end
   end
+
   defp build_lambda_error(_) do
     "Lambda expression missing 'params' or 'body' in 'v'"
   end
@@ -348,10 +429,11 @@ defmodule Phoebe.CLI.Validator do
         "Match branches must be a list"
 
       true ->
-        invalid_branches = branches
-        |> Enum.with_index()
-        |> Enum.filter(fn {branch, _idx} -> not valid_branch?(branch) end)
-        |> Enum.map(fn {_branch, idx} -> "branch #{idx}" end)
+        invalid_branches =
+          branches
+          |> Enum.with_index()
+          |> Enum.filter(fn {branch, _idx} -> not valid_branch?(branch) end)
+          |> Enum.map(fn {_branch, idx} -> "branch #{idx}" end)
 
         case invalid_branches do
           [] -> "Match expression structure is invalid"
@@ -359,6 +441,7 @@ defmodule Phoebe.CLI.Validator do
         end
     end
   end
+
   defp build_match_error(_) do
     "Match expression missing 'expr' or 'branches' in 'v'"
   end
@@ -367,32 +450,39 @@ defmodule Phoebe.CLI.Validator do
     suggestions = []
 
     # Basic structure suggestions
-    suggestions = if not is_map(gexpr) do
-      ["G-expression must be a JSON object" | suggestions]
-    else
-      suggestions
-    end
+    suggestions =
+      if not is_map(gexpr) do
+        ["G-expression must be a JSON object" | suggestions]
+      else
+        suggestions
+      end
 
     # Missing 'g' field
-    suggestions = if is_map(gexpr) and not Map.has_key?(gexpr, "g") do
-      ["Add a 'g' field specifying the expression type (lit, ref, vec, app, lam, fix, match)" | suggestions]
-    else
-      suggestions
-    end
+    suggestions =
+      if is_map(gexpr) and not Map.has_key?(gexpr, "g") do
+        [
+          "Add a 'g' field specifying the expression type (lit, ref, vec, app, lam, fix, match)"
+          | suggestions
+        ]
+      else
+        suggestions
+      end
 
     # Invalid 'g' field
-    suggestions = if is_map(gexpr) and Map.has_key?(gexpr, "g") and not is_binary(gexpr["g"]) do
-      ["The 'g' field must be a string" | suggestions]
-    else
-      suggestions
-    end
+    suggestions =
+      if is_map(gexpr) and Map.has_key?(gexpr, "g") and not is_binary(gexpr["g"]) do
+        ["The 'g' field must be a string" | suggestions]
+      else
+        suggestions
+      end
 
     # Missing 'v' field
-    suggestions = if is_map(gexpr) and not Map.has_key?(gexpr, "v") do
-      ["Add a 'v' field containing the expression value" | suggestions]
-    else
-      suggestions
-    end
+    suggestions =
+      if is_map(gexpr) and not Map.has_key?(gexpr, "v") do
+        ["Add a 'v' field containing the expression value" | suggestions]
+      else
+        suggestions
+      end
 
     Enum.reverse(suggestions)
   end

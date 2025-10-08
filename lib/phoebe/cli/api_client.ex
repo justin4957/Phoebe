@@ -17,11 +17,13 @@ defmodule Phoebe.CLI.ApiClient do
         base_url = get_base_url(opts)
         IO.puts("✓ Connected to Phoebe API at #{base_url}")
         :ok
+
       {:error, :unhealthy} ->
         base_url = get_base_url(opts)
         IO.puts("✗ Cannot connect to Phoebe API at #{base_url}")
         IO.puts("  Make sure the server is running and accessible")
         {:error, :connection_failed}
+
       {:error, reason} ->
         IO.puts("✗ Connection error: #{reason}")
         {:error, :connection_failed}
@@ -32,10 +34,11 @@ defmodule Phoebe.CLI.ApiClient do
     base_url = get_base_url(opts)
     search = Keyword.get(opts, :search)
 
-    url = case search do
-      nil -> "#{base_url}/expressions"
-      query -> "#{base_url}/expressions?search=#{URI.encode(query)}"
-    end
+    url =
+      case search do
+        nil -> "#{base_url}/expressions"
+        query -> "#{base_url}/expressions?search=#{URI.encode(query)}"
+      end
 
     case make_request(:get, url) do
       {:ok, %{"data" => expressions}} -> {:ok, expressions}
@@ -146,23 +149,26 @@ defmodule Phoebe.CLI.ApiClient do
     ]
 
     # Add body for POST/PUT requests
-    options = if body do
-      Keyword.put(options, :json, body)
-    else
-      options
-    end
+    options =
+      if body do
+        Keyword.put(options, :json, body)
+      else
+        options
+      end
 
     case Req.request(options) do
       {:ok, %{status: status, body: response_body}} when status in 200..299 ->
         {:ok, response_body}
 
       {:ok, %{status: status, body: response_body}} ->
-        error_msg = case response_body do
-          %{"error" => error} -> error
-          %{"errors" => errors} -> inspect(errors)
-          body when is_binary(body) -> body
-          body -> inspect(body)
-        end
+        error_msg =
+          case response_body do
+            %{"error" => error} -> error
+            %{"errors" => errors} -> inspect(errors)
+            body when is_binary(body) -> body
+            body -> inspect(body)
+          end
+
         {:error, "HTTP #{status}: #{error_msg}"}
 
       {:error, %{reason: reason}} ->
