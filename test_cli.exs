@@ -91,12 +91,15 @@ case FileManager.create_temp_file(lit_expr) do
             else
               IO.puts("✗ Temp file content mismatch")
             end
+
           {:error, _} ->
             IO.puts("✗ Temp file contains invalid JSON")
         end
+
       {:error, _} ->
         IO.puts("✗ Could not read temp file")
     end
+
   {:error, error} ->
     IO.puts("✗ Failed to create temp file: #{error}")
 end
@@ -104,26 +107,29 @@ end
 # Test 4: Expression Analysis
 IO.puts("\n4. Testing Expression Analysis...")
 
-complex_expr = GExpressionBuilder.app(
-  GExpressionBuilder.lam(["f", "x"],
-    GExpressionBuilder.app(
-      GExpressionBuilder.ref("f"),
-      GExpressionBuilder.ref("x")
-    )
-  ),
-  GExpressionBuilder.vec([
-    GExpressionBuilder.lam(["y"],
+complex_expr =
+  GExpressionBuilder.app(
+    GExpressionBuilder.lam(
+      ["f", "x"],
       GExpressionBuilder.app(
-        GExpressionBuilder.ref("+"),
-        GExpressionBuilder.vec([
-          GExpressionBuilder.ref("y"),
-          GExpressionBuilder.lit(1)
-        ])
+        GExpressionBuilder.ref("f"),
+        GExpressionBuilder.ref("x")
       )
     ),
-    GExpressionBuilder.lit(5)
-  ])
-)
+    GExpressionBuilder.vec([
+      GExpressionBuilder.lam(
+        ["y"],
+        GExpressionBuilder.app(
+          GExpressionBuilder.ref("+"),
+          GExpressionBuilder.vec([
+            GExpressionBuilder.ref("y"),
+            GExpressionBuilder.lit(1)
+          ])
+        )
+      ),
+      GExpressionBuilder.lit(5)
+    ])
+  )
 
 case Validator.analyze_gexpression(complex_expr) do
   {:ok, analysis} ->
@@ -131,6 +137,7 @@ case Validator.analyze_gexpression(complex_expr) do
     IO.puts("  Type: #{analysis.type}")
     IO.puts("  Complexity: #{analysis.complexity}")
     IO.puts("  Depth: #{analysis.depth}")
+
   {:error, error} ->
     IO.puts("✗ Analysis failed: #{error}")
 end
@@ -172,6 +179,7 @@ try do
   end
 
   output = capture_io.()
+
   if String.length(output) > 100 do
     IO.puts("✓ Examples generated successfully")
   else
@@ -183,7 +191,7 @@ rescue
 end
 
 # Summary
-IO.puts("\n" <> "=" |> String.duplicate(50))
+IO.puts(("\n" <> "=") |> String.duplicate(50))
 IO.puts("Basic CLI functionality test completed!")
 IO.puts("✓ All core components are working")
 

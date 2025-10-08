@@ -40,6 +40,7 @@ defmodule Phoebe.CLI.GExpressionBuilder do
 
   def create_expression("lam", [params_str, body_str], _opts) do
     params = String.split(params_str, ",") |> Enum.map(&String.trim/1)
+
     with {:ok, body_expr} <- parse_gexpression_string(body_str) do
       {:ok, lam(params, body_expr)}
     end
@@ -121,10 +122,11 @@ defmodule Phoebe.CLI.GExpressionBuilder do
       %{
         name: "Nested Application",
         description: "Complex nested function application",
-        gexpr: app(
-          lam(["f", "x"], app(ref("f"), ref("x"))),
-          vec([lam(["y"], app(ref("+"), vec([ref("y"), lit(1)]))), lit(5)])
-        )
+        gexpr:
+          app(
+            lam(["f", "x"], app(ref("f"), ref("x"))),
+            vec([lam(["y"], app(ref("+"), vec([ref("y"), lit(1)]))), lit(5)])
+          )
       },
       %{
         name: "Y Combinator",
@@ -178,13 +180,15 @@ defmodule Phoebe.CLI.GExpressionBuilder do
   def app_single(fn_expr), do: %{"g" => "app", "v" => %{"fn" => fn_expr}}
 
   @doc "Creates a lambda G-expression."
-  def lam(params, body) when is_list(params), do: %{"g" => "lam", "v" => %{"params" => params, "body" => body}}
+  def lam(params, body) when is_list(params),
+    do: %{"g" => "lam", "v" => %{"params" => params, "body" => body}}
 
   @doc "Creates a fixed-point G-expression (Y-combinator)."
   def fix(expr), do: %{"g" => "fix", "v" => expr}
 
   @doc "Creates a match G-expression for pattern matching."
-  def match(expr, branches) when is_list(branches), do: %{"g" => "match", "v" => %{"expr" => expr, "branches" => branches}}
+  def match(expr, branches) when is_list(branches),
+    do: %{"g" => "match", "v" => %{"expr" => expr, "branches" => branches}}
 
   # Utility functions
 
@@ -233,6 +237,7 @@ defmodule Phoebe.CLI.GExpressionBuilder do
           {:ok, _} -> IO.puts("✓ Expression is valid")
           {:error, error} -> IO.puts("✗ #{error}")
         end
+
         build_loop(current_expr, opts)
 
       "clear" ->
@@ -244,6 +249,7 @@ defmodule Phoebe.CLI.GExpressionBuilder do
           {:ok, new_expr} ->
             IO.puts("✓ Expression updated")
             build_loop(new_expr, opts)
+
           {:error, error} ->
             IO.puts("✗ #{error}")
             build_loop(current_expr, opts)
@@ -286,12 +292,16 @@ defmodule Phoebe.CLI.GExpressionBuilder do
     cond do
       String.match?(value_str, ~r/^-?\d+$/) ->
         String.to_integer(value_str)
+
       String.match?(value_str, ~r/^-?\d*\.\d+$/) ->
         String.to_float(value_str)
+
       String.starts_with?(value_str, "\"") and String.ends_with?(value_str, "\"") ->
         String.slice(value_str, 1..-2)
+
       value_str in ["true", "false"] ->
         value_str == "true"
+
       true ->
         value_str
     end
@@ -302,9 +312,11 @@ defmodule Phoebe.CLI.GExpressionBuilder do
       "ref(" <> rest ->
         name = String.replace(rest, ~r/\)$/, "")
         {:ok, ref(String.trim(name, "\""))}
+
       "lit(" <> rest ->
         value_str = String.replace(rest, ~r/\)$/, "")
         {:ok, lit(parse_value(value_str))}
+
       json_like ->
         case Jason.decode(json_like) do
           {:ok, parsed} ->
@@ -312,7 +324,9 @@ defmodule Phoebe.CLI.GExpressionBuilder do
               {:ok, valid} -> {:ok, valid}
               {:error, _} -> {:error, "Invalid G-expression: #{json_like}"}
             end
-          {:error, _} -> {:error, "Could not parse: #{json_like}"}
+
+          {:error, _} ->
+            {:error, "Could not parse: #{json_like}"}
         end
     end
   end
@@ -331,35 +345,56 @@ defmodule Phoebe.CLI.GExpressionBuilder do
 
   defp format_pretty(gexpr) do
     case gexpr do
-      %{"g" => "lit", "v" => v} -> "lit(#{inspect(v)})"
-      %{"g" => "ref", "v" => v} -> "ref(#{v})"
-      %{"g" => "vec", "v" => v} -> "vec(#{format_vector_pretty(v)})"
+      %{"g" => "lit", "v" => v} ->
+        "lit(#{inspect(v)})"
+
+      %{"g" => "ref", "v" => v} ->
+        "ref(#{v})"
+
+      %{"g" => "vec", "v" => v} ->
+        "vec(#{format_vector_pretty(v)})"
+
       %{"g" => "app", "v" => %{"fn" => fn_expr, "args" => args}} ->
         "app(#{format_pretty(fn_expr)}, #{format_pretty(args)})"
+
       %{"g" => "app", "v" => %{"fn" => fn_expr}} ->
         "app(#{format_pretty(fn_expr)})"
+
       %{"g" => "lam", "v" => %{"params" => params, "body" => body}} ->
         "lam([#{Enum.join(params, ", ")}], #{format_pretty(body)})"
-      %{"g" => "fix", "v" => v} -> "fix(#{format_pretty(v)})"
+
+      %{"g" => "fix", "v" => v} ->
+        "fix(#{format_pretty(v)})"
+
       %{"g" => "match", "v" => %{"expr" => expr, "branches" => branches}} ->
         "match(#{format_pretty(expr)}, #{length(branches)} branches)"
-      _ -> Jason.encode!(gexpr, pretty: true)
+
+      _ ->
+        Jason.encode!(gexpr, pretty: true)
     end
   end
 
   defp format_elixir(gexpr) do
     case gexpr do
-      %{"g" => "lit", "v" => v} -> "lit(#{inspect(v)})"
-      %{"g" => "ref", "v" => v} -> "ref(\"#{v}\")"
+      %{"g" => "lit", "v" => v} ->
+        "lit(#{inspect(v)})"
+
+      %{"g" => "ref", "v" => v} ->
+        "ref(\"#{v}\")"
+
       %{"g" => "vec", "v" => v} ->
         elements = Enum.map(v, &format_elixir_element/1) |> Enum.join(", ")
         "vec([#{elements}])"
+
       %{"g" => "app", "v" => %{"fn" => fn_expr, "args" => args}} ->
         "app(#{format_elixir(fn_expr)}, #{format_elixir(args)})"
+
       %{"g" => "lam", "v" => %{"params" => params, "body" => body}} ->
         params_str = params |> Enum.map(&"\"#{&1}\"") |> Enum.join(", ")
         "lam([#{params_str}], #{format_elixir(body)})"
-      _ -> "# Complex expression - see JSON"
+
+      _ ->
+        "# Complex expression - see JSON"
     end
   end
 
@@ -367,10 +402,12 @@ defmodule Phoebe.CLI.GExpressionBuilder do
   defp format_elixir_element(value), do: "lit(#{inspect(value)})"
 
   defp format_vector_pretty(items) do
-    formatted = Enum.map(items, fn
-      %{"g" => _} = gexpr -> format_pretty(gexpr)
-      value -> inspect(value)
-    end)
+    formatted =
+      Enum.map(items, fn
+        %{"g" => _} = gexpr -> format_pretty(gexpr)
+        value -> inspect(value)
+      end)
+
     "[#{Enum.join(formatted, ", ")}]"
   end
 end

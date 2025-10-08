@@ -16,8 +16,11 @@ defmodule Phoebe.GExpression.Validator do
           {:ok, _} -> {:ok, expression_data}
           error -> error
         end
+
       %{"g" => type} when not is_nil(type) ->
-        {:error, "Invalid g-expression type: '#{type}'. Valid types are: #{Enum.join(@valid_types, ", ")}"}
+        {:error,
+         "Invalid g-expression type: '#{type}'. Valid types are: #{Enum.join(@valid_types, ", ")}"}
+
       _ ->
         {:error, "Invalid g-expression format: must have 'g' (type) and 'v' (value) keys"}
     end
@@ -30,8 +33,11 @@ defmodule Phoebe.GExpression.Validator do
     case value do
       v when is_number(v) or is_binary(v) or is_boolean(v) or is_nil(v) ->
         {:ok, value}
+
       v when is_list(v) ->
-        {:ok, value}  # Arrays are valid literals
+        # Arrays are valid literals
+        {:ok, value}
+
       _ ->
         {:error, "Literal value must be a number, string, boolean, null, or array"}
     end
@@ -45,6 +51,7 @@ defmodule Phoebe.GExpression.Validator do
       {:error, "Reference must be a valid identifier"}
     end
   end
+
   defp validate_by_type("ref", _), do: {:error, "Reference value must be a string"}
 
   # Validate function applications
@@ -54,12 +61,14 @@ defmodule Phoebe.GExpression.Validator do
       {:ok, %{"fn" => fn_expr, "args" => args}}
     end
   end
+
   defp validate_by_type("app", %{"fn" => fn_expr}) do
     case validate(fn_expr) do
       {:ok, _} -> {:ok, %{"fn" => fn_expr}}
       error -> error
     end
   end
+
   defp validate_by_type("app", _), do: {:error, "Application must have 'fn' field"}
 
   # Validate vectors/arrays
@@ -70,6 +79,7 @@ defmodule Phoebe.GExpression.Validator do
       error -> error
     end
   end
+
   defp validate_by_type("vec", _), do: {:error, "Vector value must be an array"}
 
   # Validate lambda functions
@@ -79,7 +89,9 @@ defmodule Phoebe.GExpression.Validator do
       {:ok, %{"params" => params, "body" => body}}
     end
   end
-  defp validate_by_type("lam", _), do: {:error, "Lambda must have 'params' (array) and 'body' fields"}
+
+  defp validate_by_type("lam", _),
+    do: {:error, "Lambda must have 'params' (array) and 'body' fields"}
 
   # Validate fixed-point combinator
   defp validate_by_type("fix", value) do
@@ -90,12 +102,14 @@ defmodule Phoebe.GExpression.Validator do
   end
 
   # Validate pattern matching
-  defp validate_by_type("match", %{"expr" => expr, "branches" => branches}) when is_list(branches) do
+  defp validate_by_type("match", %{"expr" => expr, "branches" => branches})
+       when is_list(branches) do
     with {:ok, _} <- validate(expr),
          {:ok, _} <- validate_branches(branches) do
       {:ok, %{"expr" => expr, "branches" => branches}}
     end
   end
+
   defp validate_by_type("match", _), do: {:error, "Match must have 'expr' and 'branches' fields"}
 
   # Helper functions
@@ -103,12 +117,15 @@ defmodule Phoebe.GExpression.Validator do
   defp validate_args(args) when is_map(args) do
     validate(args)
   end
+
   defp validate_args(args) when is_list(args) do
     validate_expression_list(args)
   end
+
   defp validate_args(_), do: {:error, "Arguments must be a g-expression or array"}
 
   defp validate_expression_list([]), do: {:ok, []}
+
   defp validate_expression_list([expr | rest]) do
     case validate(expr) do
       {:ok, _} -> validate_expression_list(rest)
@@ -117,6 +134,7 @@ defmodule Phoebe.GExpression.Validator do
   end
 
   defp validate_param_list([]), do: {:ok, []}
+
   defp validate_param_list([param | rest]) when is_binary(param) do
     if String.match?(param, ~r/^[a-zA-Z_][a-zA-Z0-9_]*$/) do
       validate_param_list(rest)
@@ -124,11 +142,13 @@ defmodule Phoebe.GExpression.Validator do
       {:error, "Parameter '#{param}' must be a valid identifier"}
     end
   end
+
   defp validate_param_list([param | _]) do
     {:error, "Parameter must be a string, got: #{inspect(param)}"}
   end
 
   defp validate_branches([]), do: {:ok, []}
+
   defp validate_branches([branch | rest]) do
     case validate_branch(branch) do
       {:ok, _} -> validate_branches(rest)
@@ -142,6 +162,7 @@ defmodule Phoebe.GExpression.Validator do
       {:ok, %{"pattern" => pattern, "result" => result}}
     end
   end
+
   defp validate_branch(_), do: {:error, "Branch must have 'pattern' and 'result' fields"}
 
   defp validate_pattern(%{"lit_pattern" => true}), do: {:ok, %{"lit_pattern" => true}}

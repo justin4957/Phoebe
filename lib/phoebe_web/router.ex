@@ -39,11 +39,14 @@ defmodule PhoebeWeb.Router do
     post "/expressions/:name/versions", VersionController, :create
     get "/expressions/:name/versions/:version", VersionController, :show
     delete "/expressions/:name/versions/:version", VersionController, :delete
+
+    # Dependency routes
+    get "/expressions/:name/dependencies", GExpressionController, :dependencies
+    get "/expressions/:name/dependents", GExpressionController, :dependents
   end
 
   # Enable Swoosh mailbox preview in development
   if Application.compile_env(:phoebe, :dev_routes) do
-
     scope "/dev" do
       pipe_through :browser
 

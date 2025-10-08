@@ -20,32 +20,34 @@ defmodule Phoebe.CLI do
   end
 
   defp parse_args(args) do
-    {opts, args, _} = OptionParser.parse(args,
-      switches: [
-        help: :boolean,
-        version: :boolean,
-        base_url: :string,
-        temp_dir: :string,
-        output: :string,
-        format: :string,
-        validate: :boolean,
-        interactive: :boolean
-      ],
-      aliases: [
-        h: :help,
-        v: :version,
-        u: :base_url,
-        t: :temp_dir,
-        o: :output,
-        f: :format,
-        i: :interactive
-      ]
-    )
+    {opts, args, _} =
+      OptionParser.parse(args,
+        switches: [
+          help: :boolean,
+          version: :boolean,
+          base_url: :string,
+          temp_dir: :string,
+          output: :string,
+          format: :string,
+          validate: :boolean,
+          interactive: :boolean
+        ],
+        aliases: [
+          h: :help,
+          v: :version,
+          u: :base_url,
+          t: :temp_dir,
+          o: :output,
+          f: :format,
+          i: :interactive
+        ]
+      )
 
-    command = case args do
-      [] -> :help
-      [cmd | rest] -> {String.to_atom(cmd), rest}
-    end
+    command =
+      case args do
+        [] -> :help
+        [cmd | rest] -> {String.to_atom(cmd), rest}
+      end
 
     {command, opts}
   end
@@ -56,21 +58,54 @@ defmodule Phoebe.CLI do
 
   defp handle_command({command, args}, opts) do
     case command do
-      :list -> handle_list(args, opts)
-      :get -> handle_get(args, opts)
-      :publish -> handle_publish(args, opts)
-      :validate -> handle_validate(args, opts)
-      :create -> handle_create(args, opts)
-      :build -> handle_build(args, opts)
-      :repl -> handle_repl(args, opts)
-      :temp -> handle_temp(args, opts)
-      :save -> handle_save(args, opts)
-      :load -> handle_load(args, opts)
-      :examples -> handle_examples(args, opts)
-      :session -> handle_session(args, opts)
-      :working -> handle_working(args, opts)
-      :promote -> handle_promote(args, opts)
-      :auto -> handle_auto_save(args, opts)
+      :list ->
+        handle_list(args, opts)
+
+      :get ->
+        handle_get(args, opts)
+
+      :publish ->
+        handle_publish(args, opts)
+
+      :validate ->
+        handle_validate(args, opts)
+
+      :create ->
+        handle_create(args, opts)
+
+      :build ->
+        handle_build(args, opts)
+
+      :repl ->
+        handle_repl(args, opts)
+
+      :temp ->
+        handle_temp(args, opts)
+
+      :save ->
+        handle_save(args, opts)
+
+      :load ->
+        handle_load(args, opts)
+
+      :examples ->
+        handle_examples(args, opts)
+
+      :session ->
+        handle_session(args, opts)
+
+      :working ->
+        handle_working(args, opts)
+
+      :promote ->
+        handle_promote(args, opts)
+
+      :auto ->
+        handle_auto_save(args, opts)
+
+      :deps ->
+        handle_deps(args, opts)
+
       _ ->
         IO.puts("Unknown command: #{command}")
         print_help()
@@ -88,6 +123,7 @@ defmodule Phoebe.CLI do
     case ApiClient.list_expressions(opts) do
       {:ok, expressions} ->
         format_expressions_list(expressions, opts)
+
       {:error, error} ->
         IO.puts("Error listing expressions: #{error}")
         System.halt(1)
@@ -98,6 +134,7 @@ defmodule Phoebe.CLI do
     case ApiClient.get_expression(name, opts) do
       {:ok, expression} ->
         format_expression_details(expression, opts)
+
       {:error, error} ->
         IO.puts("Error getting expression: #{error}")
         System.halt(1)
@@ -118,14 +155,17 @@ defmodule Phoebe.CLI do
             case ApiClient.publish_expression(expression_data, opts) do
               {:ok, response} ->
                 IO.puts("Successfully published expression: #{response["name"]}")
+
               {:error, error} ->
                 IO.puts("Error publishing expression: #{error}")
                 System.halt(1)
             end
+
           {:error, json_error} ->
             IO.puts("Error parsing JSON: #{inspect(json_error)}")
             System.halt(1)
         end
+
       {:error, file_error} ->
         IO.puts("Error reading file: #{inspect(file_error)}")
         System.halt(1)
@@ -146,14 +186,17 @@ defmodule Phoebe.CLI do
             case Phoebe.CLI.Validator.validate_gexpression(expression_data) do
               {:ok, _validated} ->
                 IO.puts("✓ G-expression is valid")
+
               {:error, error} ->
                 IO.puts("✗ Validation error: #{error}")
                 System.halt(1)
             end
+
           {:error, json_error} ->
             IO.puts("Error parsing JSON: #{inspect(json_error)}")
             System.halt(1)
         end
+
       {:error, file_error} ->
         IO.puts("Error reading file: #{inspect(file_error)}")
         System.halt(1)
@@ -170,6 +213,7 @@ defmodule Phoebe.CLI do
     case GExpressionBuilder.create_expression(type, args, opts) do
       {:ok, expression} ->
         output_expression(expression, opts)
+
       {:error, error} ->
         IO.puts("Error creating expression: #{error}")
         System.halt(1)
@@ -180,6 +224,7 @@ defmodule Phoebe.CLI do
     case GExpressionBuilder.interactive_build(opts) do
       {:ok, expression} ->
         output_expression(expression, opts)
+
       {:error, error} ->
         IO.puts("Error building expression: #{error}")
         System.halt(1)
@@ -192,9 +237,15 @@ defmodule Phoebe.CLI do
 
   defp handle_temp([action | args], opts) do
     case action do
-      "list" -> FileManager.list_temp_files(opts)
-      "clean" -> FileManager.clean_temp_files(opts)
-      "save" -> FileManager.save_temp_file(args, opts)
+      "list" ->
+        FileManager.list_temp_files(opts)
+
+      "clean" ->
+        FileManager.clean_temp_files(opts)
+
+      "save" ->
+        FileManager.save_temp_file(args, opts)
+
       _ ->
         IO.puts("Unknown temp action: #{action}")
         IO.puts("Available actions: list, clean, save")
@@ -211,19 +262,29 @@ defmodule Phoebe.CLI do
               {:ok, session_dir} ->
                 IO.puts("✓ Created session: #{name}")
                 IO.puts("Directory: #{session_dir}")
+
               {:error, error} ->
                 IO.puts("✗ Error creating session: #{error}")
                 System.halt(1)
             end
+
           _ ->
             IO.puts("Usage: phoebe session create <name>")
             System.halt(1)
         end
-      "list" -> FileManager.list_sessions(opts)
+
+      "list" ->
+        FileManager.list_sessions(opts)
+
       "add" ->
         case args do
           [session_name, expr_name, expr_file] ->
-            session_dir = Path.join(FileManager.get_temp_dir(opts), "session_#{FileManager.sanitize_filename(session_name)}")
+            session_dir =
+              Path.join(
+                FileManager.get_temp_dir(opts),
+                "session_#{FileManager.sanitize_filename(session_name)}"
+              )
+
             case File.read(expr_file) do
               {:ok, content} ->
                 case Jason.decode(content) do
@@ -232,22 +293,27 @@ defmodule Phoebe.CLI do
                       {:ok, expr_path} ->
                         IO.puts("✓ Added '#{expr_name}' to session '#{session_name}'")
                         IO.puts("File: #{expr_path}")
+
                       {:error, error} ->
                         IO.puts("✗ Error adding to session: #{error}")
                         System.halt(1)
                     end
+
                   {:error, json_error} ->
                     IO.puts("✗ Invalid JSON in file: #{inspect(json_error)}")
                     System.halt(1)
                 end
+
               {:error, file_error} ->
                 IO.puts("✗ Error reading file: #{inspect(file_error)}")
                 System.halt(1)
             end
+
           _ ->
             IO.puts("Usage: phoebe session add <session_name> <expr_name> <expr_file>")
             System.halt(1)
         end
+
       _ ->
         IO.puts("Unknown session action: #{action}")
         IO.puts("Available actions: create, list, add")
@@ -257,7 +323,9 @@ defmodule Phoebe.CLI do
 
   defp handle_working([action | args], opts) do
     case action do
-      "list" -> FileManager.list_working_files(opts)
+      "list" ->
+        FileManager.list_working_files(opts)
+
       _ ->
         IO.puts("Unknown working action: #{action}")
         IO.puts("Available actions: list")
@@ -269,6 +337,7 @@ defmodule Phoebe.CLI do
     case FileManager.promote_to_permanent(working_file, name, opts) do
       {:ok, permanent_path} ->
         IO.puts("✓ Promoted to permanent storage: #{permanent_path}")
+
       {:error, error} ->
         IO.puts("✗ Error promoting file: #{error}")
         System.halt(1)
@@ -288,10 +357,12 @@ defmodule Phoebe.CLI do
             IO.puts("✓ Auto-saved expression to: #{file_path}")
             IO.puts("Expression:")
             IO.puts(Jason.encode!(expression, pretty: true))
+
           {:error, error} ->
             IO.puts("✗ Error auto-saving: #{error}")
             System.halt(1)
         end
+
       {:error, error} ->
         IO.puts("✗ Error creating expression: #{error}")
         System.halt(1)
@@ -308,6 +379,7 @@ defmodule Phoebe.CLI do
     case FileManager.save_permanent(file_path, name, opts) do
       {:ok, saved_path} ->
         IO.puts("Saved to: #{saved_path}")
+
       {:error, error} ->
         IO.puts("Error saving file: #{error}")
         System.halt(1)
@@ -318,6 +390,7 @@ defmodule Phoebe.CLI do
     case FileManager.load_permanent(name, opts) do
       {:ok, content} ->
         IO.puts(content)
+
       {:error, error} ->
         IO.puts("Error loading file: #{error}")
         System.halt(1)
@@ -328,6 +401,69 @@ defmodule Phoebe.CLI do
     GExpressionBuilder.show_examples()
   end
 
+  defp handle_deps([action | args], opts) do
+    case action do
+      "tree" ->
+        case args do
+          [package_name] ->
+            case Phoebe.Repository.build_dependency_tree(package_name) do
+              {:ok, tree} ->
+                print_dependency_tree(tree)
+
+              {:error, error} ->
+                IO.puts("Error: #{error}")
+                System.halt(1)
+            end
+
+          _ ->
+            IO.puts("Usage: phoebe deps tree <package_name>")
+            System.halt(1)
+        end
+
+      "resolve" ->
+        case args do
+          [package_name] ->
+            case Phoebe.Repository.resolve_dependencies(package_name) do
+              {:ok, resolved} ->
+                print_resolved_dependencies(package_name, resolved)
+
+              {:error, error} ->
+                IO.puts("Error: #{error}")
+                System.halt(1)
+            end
+
+          _ ->
+            IO.puts("Usage: phoebe deps resolve <package_name>")
+            System.halt(1)
+        end
+
+      "dependents" ->
+        case args do
+          [package_name] ->
+            dependents = Phoebe.Repository.list_dependents(package_name)
+            print_dependents(package_name, dependents)
+
+          _ ->
+            IO.puts("Usage: phoebe deps dependents <package_name>")
+            System.halt(1)
+        end
+
+      _ ->
+        IO.puts("Unknown deps action: #{action}")
+        IO.puts("Available actions: tree, resolve, dependents")
+        System.halt(1)
+    end
+  end
+
+  defp handle_deps([], _opts) do
+    IO.puts("Usage: phoebe deps <action> [args...]")
+    IO.puts("Actions:")
+    IO.puts("  tree <package>       - Show dependency tree")
+    IO.puts("  resolve <package>    - Resolve all dependencies")
+    IO.puts("  dependents <package> - List packages that depend on this one")
+    System.halt(1)
+  end
+
   # Output formatting
 
   defp format_expressions_list(expressions, opts) do
@@ -336,8 +472,10 @@ defmodule Phoebe.CLI do
     case format do
       "json" ->
         IO.puts(Jason.encode!(expressions, pretty: true))
+
       "table" ->
         print_expressions_table(expressions)
+
       _ ->
         IO.puts("Unknown format: #{format}")
         System.halt(1)
@@ -350,8 +488,10 @@ defmodule Phoebe.CLI do
     case format do
       "json" ->
         IO.puts(Jason.encode!(expression, pretty: true))
+
       "pretty" ->
         print_expression_details(expression)
+
       _ ->
         IO.puts("Unknown format: #{format}")
         System.halt(1)
@@ -362,18 +502,23 @@ defmodule Phoebe.CLI do
     output_file = Keyword.get(opts, :output)
     format = Keyword.get(opts, :format, "pretty")
 
-    formatted = case format do
-      "json" -> Jason.encode!(expression, pretty: true)
-      "compact" -> Jason.encode!(expression)
-      "pretty" -> format_expression_pretty(expression)
-      _ -> Jason.encode!(expression, pretty: true)
-    end
+    formatted =
+      case format do
+        "json" -> Jason.encode!(expression, pretty: true)
+        "compact" -> Jason.encode!(expression)
+        "pretty" -> format_expression_pretty(expression)
+        _ -> Jason.encode!(expression, pretty: true)
+      end
 
     case output_file do
-      nil -> IO.puts(formatted)
+      nil ->
+        IO.puts(formatted)
+
       file_path ->
         case File.write(file_path, formatted) do
-          :ok -> IO.puts("Expression saved to: #{file_path}")
+          :ok ->
+            IO.puts("Expression saved to: #{file_path}")
+
           {:error, reason} ->
             IO.puts("Error writing file: #{inspect(reason)}")
             System.halt(1)
@@ -386,10 +531,12 @@ defmodule Phoebe.CLI do
     IO.puts("PHOEBE G-EXPRESSIONS")
     IO.puts(String.duplicate("=", 80))
 
-    header = String.pad_trailing("NAME", 20) <>
-             String.pad_trailing("TITLE", 30) <>
-             String.pad_trailing("DOWNLOADS", 12) <>
-             "TAGS"
+    header =
+      String.pad_trailing("NAME", 20) <>
+        String.pad_trailing("TITLE", 30) <>
+        String.pad_trailing("DOWNLOADS", 12) <>
+        "TAGS"
+
     IO.puts(header)
     IO.puts(String.duplicate("-", 80))
 
@@ -419,6 +566,7 @@ defmodule Phoebe.CLI do
 
     if expression["versions"] do
       IO.puts("\nVersions:")
+
       Enum.each(expression["versions"], fn version ->
         IO.puts("  • #{version["version"]} (#{version["inserted_at"]})")
       end)
@@ -474,6 +622,11 @@ defmodule Phoebe.CLI do
         session list            List all active sessions
         session add <s> <n> <f> Add expression to session
 
+      • Dependency Management:
+        deps tree <package>     Show dependency tree
+        deps resolve <package>  Resolve all dependencies
+        deps dependents <pkg>   List packages that depend on this one
+
       • Help & Examples:
         examples                Show G-expression examples
         help                    Show this help message
@@ -509,6 +662,57 @@ defmodule Phoebe.CLI do
 
     For more information, visit: https://github.com/your-org/phoebe
     """)
+  end
+
+  defp print_dependency_tree(tree, indent \\ 0) do
+    prefix = String.duplicate("  ", indent)
+    IO.puts("#{prefix}#{tree.name}@#{tree.version}")
+
+    Enum.each(tree.dependencies, fn dep ->
+      case dep do
+        %{error: error} ->
+          IO.puts("#{prefix}  └─ #{dep.name} (#{error})")
+
+        tree_node ->
+          print_dependency_tree(tree_node, indent + 1)
+      end
+    end)
+  end
+
+  defp print_resolved_dependencies(package_name, resolved) do
+    IO.puts("\n" <> String.duplicate("=", 60))
+    IO.puts("RESOLVED DEPENDENCIES FOR: #{package_name}")
+    IO.puts(String.duplicate("=", 60))
+
+    if map_size(resolved) == 1 do
+      IO.puts("No dependencies")
+    else
+      resolved
+      |> Map.delete(package_name)
+      |> Enum.sort_by(fn {name, _} -> name end)
+      |> Enum.each(fn {name, version} ->
+        IO.puts("  #{String.pad_trailing(name, 30)} #{version}")
+      end)
+    end
+
+    IO.puts(String.duplicate("=", 60) <> "\n")
+  end
+
+  defp print_dependents(package_name, dependents) do
+    IO.puts("\n" <> String.duplicate("=", 60))
+    IO.puts("PACKAGES THAT DEPEND ON: #{package_name}")
+    IO.puts(String.duplicate("=", 60))
+
+    if Enum.empty?(dependents) do
+      IO.puts("No dependents found")
+    else
+      Enum.each(dependents, fn dep ->
+        version_req = dep.version_requirement
+        IO.puts("  #{String.pad_trailing(dep.name, 30)} (requires: #{version_req})")
+      end)
+    end
+
+    IO.puts(String.duplicate("=", 60) <> "\n")
   end
 
   defp print_version do

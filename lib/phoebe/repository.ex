@@ -71,8 +71,8 @@ defmodule Phoebe.Repository do
     from(g in GExpression,
       where:
         ilike(g.name, ^search_term) or
-        ilike(g.title, ^search_term) or
-        ilike(g.description, ^search_term),
+          ilike(g.title, ^search_term) or
+          ilike(g.description, ^search_term),
       order_by: [desc: g.downloads_count, desc: g.inserted_at],
       limit: ^per_page,
       offset: ^offset
@@ -129,5 +129,38 @@ defmodule Phoebe.Repository do
   """
   def delete_version(%Version{} = version) do
     Repo.delete(version)
+  end
+
+  # Dependency functions
+
+  @doc """
+  Resolves all dependencies for a G-expression.
+  Returns a flat map of package names to resolved versions.
+  """
+  def resolve_dependencies(package_name) do
+    Phoebe.Dependencies.Resolver.resolve(package_name)
+  end
+
+  @doc """
+  Builds a dependency tree for a G-expression.
+  Returns a nested structure showing the full dependency hierarchy.
+  """
+  def build_dependency_tree(package_name) do
+    Phoebe.Dependencies.Resolver.build_tree(package_name)
+  end
+
+  @doc """
+  Lists all packages that depend on a given G-expression.
+  """
+  def list_dependents(package_name) do
+    from(g in GExpression,
+      where: fragment("? @> ?::jsonb", g.dependencies, ^%{package_name => ""}),
+      select: %{
+        name: g.name,
+        title: g.title,
+        version_requirement: fragment("?->?", g.dependencies, ^package_name)
+      }
+    )
+    |> Repo.all()
   end
 end

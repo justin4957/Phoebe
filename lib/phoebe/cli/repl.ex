@@ -69,9 +69,11 @@ defmodule Phoebe.CLI.REPL do
     case String.trim(rest) do
       "" ->
         display_current_expression(state.current_expr)
+
       var_name ->
         display_variable(var_name, state.saved_vars)
     end
+
     state
   end
 
@@ -79,14 +81,17 @@ defmodule Phoebe.CLI.REPL do
     case state.current_expr do
       nil ->
         IO.puts("No current expression to validate.")
+
       expr ->
         case Validator.validate_gexpression(expr) do
           {:ok, _} ->
             IO.puts("✓ Expression is valid")
+
           {:error, error} ->
             IO.puts("✗ Validation error: #{error}")
         end
     end
+
     state
   end
 
@@ -94,14 +99,17 @@ defmodule Phoebe.CLI.REPL do
     case state.current_expr do
       nil ->
         IO.puts("No current expression to analyze.")
+
       expr ->
         case Validator.analyze_gexpression(expr) do
           {:ok, analysis} ->
             print_analysis(analysis)
+
           {:error, error} ->
             IO.puts("✗ Analysis error: #{error}")
         end
     end
+
     state
   end
 
@@ -110,13 +118,20 @@ defmodule Phoebe.CLI.REPL do
       nil ->
         IO.puts("No current expression to save.")
         state
+
       expr ->
-        case FileManager.save_permanent_content(Jason.encode!(expr, pretty: true), name, state.opts) do
+        case FileManager.save_permanent_content(
+               Jason.encode!(expr, pretty: true),
+               name,
+               state.opts
+             ) do
           {:ok, file_path} ->
             IO.puts("✓ Saved to: #{file_path}")
+
           {:error, error} ->
             IO.puts("✗ Save error: #{error}")
         end
+
         state
     end
   end
@@ -129,10 +144,12 @@ defmodule Phoebe.CLI.REPL do
             IO.puts("✓ Loaded '#{name}'")
             display_expression(expr)
             %{state | current_expr: expr}
+
           {:error, json_error} ->
             IO.puts("✗ Invalid JSON in saved file: #{inspect(json_error)}")
             state
         end
+
       {:error, error} ->
         IO.puts("✗ Load error: #{error}")
         state
@@ -143,15 +160,18 @@ defmodule Phoebe.CLI.REPL do
     case String.split(assignment, "=", parts: 2) do
       [var_name, _value] ->
         var_name = String.trim(var_name)
+
         case state.current_expr do
           nil ->
             IO.puts("No current expression to assign to variable '#{var_name}'")
             state
+
           expr ->
             IO.puts("✓ Variable '#{var_name}' assigned")
             new_vars = Map.put(state.saved_vars, var_name, expr)
             %{state | saved_vars: new_vars}
         end
+
       _ ->
         IO.puts("Usage: var <name>=<current_expression>")
         IO.puts("This assigns the current expression to a variable name.")
@@ -165,12 +185,15 @@ defmodule Phoebe.CLI.REPL do
     else
       IO.puts("\nSaved Variables:")
       IO.puts(String.duplicate("-", 40))
+
       Enum.each(state.saved_vars, fn {name, expr} ->
         type = expr["g"] || "unknown"
         IO.puts("#{String.pad_trailing(name, 15)} [#{type}]")
       end)
+
       IO.puts("")
     end
+
     state
   end
 
@@ -178,11 +201,14 @@ defmodule Phoebe.CLI.REPL do
     case String.trim(rest) do
       "" ->
         FileManager.list_temp_files(state.opts)
+
       "clean" ->
         FileManager.clean_temp_files(state.opts)
+
       _ ->
         IO.puts("Usage: temp [clean]")
     end
+
     state
   end
 
@@ -192,14 +218,18 @@ defmodule Phoebe.CLI.REPL do
         case ApiClient.list_expressions(state.opts) do
           {:ok, expressions} ->
             print_expressions_list(expressions)
+
           {:error, error} ->
             IO.puts("✗ API error: #{error}")
         end
+
       "saved" ->
         FileManager.list_permanent_files(state.opts)
+
       _ ->
         IO.puts("Usage: list [saved]")
     end
+
     state
   end
 
@@ -210,6 +240,7 @@ defmodule Phoebe.CLI.REPL do
         IO.puts("✓ Retrieved '#{name}' from API")
         display_expression(expr)
         %{state | current_expr: expr}
+
       {:error, error} ->
         IO.puts("✗ API error: #{error}")
         state
@@ -221,6 +252,7 @@ defmodule Phoebe.CLI.REPL do
       nil ->
         IO.puts("No current expression to publish.")
         state
+
       expr ->
         # Create a basic expression package
         package = %{
@@ -234,9 +266,11 @@ defmodule Phoebe.CLI.REPL do
         case ApiClient.publish_expression(package, state.opts) do
           {:ok, response} ->
             IO.puts("✓ Published as '#{response["name"]}'")
+
           {:error, error} ->
             IO.puts("✗ Publish error: #{error}")
         end
+
         state
     end
   end
@@ -246,6 +280,7 @@ defmodule Phoebe.CLI.REPL do
       nil ->
         IO.puts("No current expression to edit.")
         state
+
       expr ->
         case FileManager.edit_temp_file(expr, state.opts) do
           {:ok, {edited_expr, temp_path}} ->
@@ -253,6 +288,7 @@ defmodule Phoebe.CLI.REPL do
             display_expression(edited_expr)
             new_temp_files = [temp_path | state.temp_files]
             %{state | current_expr: edited_expr, temp_files: new_temp_files}
+
           {:error, error} ->
             IO.puts("✗ Edit error: #{error}")
             state
@@ -271,14 +307,17 @@ defmodule Phoebe.CLI.REPL do
     else
       IO.puts("\nCommand History:")
       IO.puts(String.duplicate("-", 40))
+
       state.history
       |> Enum.reverse()
       |> Enum.with_index(1)
       |> Enum.each(fn {cmd, index} ->
         IO.puts("#{String.pad_leading("#{index}", 3)}. #{cmd}")
       end)
+
       IO.puts("")
     end
+
     state
   end
 
@@ -301,8 +340,10 @@ defmodule Phoebe.CLI.REPL do
   end
 
   defp handle_command("vec " <> items_str, state) do
-    items = String.split(items_str, ~r/\s+/)
-            |> Enum.map(&parse_value_or_var(&1, state.saved_vars))
+    items =
+      String.split(items_str, ~r/\s+/)
+      |> Enum.map(&parse_value_or_var(&1, state.saved_vars))
+
     expr = GExpressionBuilder.vec(items)
     IO.puts("✓ Created vector expression")
     display_expression(expr)
@@ -320,6 +361,7 @@ defmodule Phoebe.CLI.REPL do
         display_expression(expr)
         new_history = ["app #{args_str}" | state.history]
         %{state | current_expr: expr, history: new_history}
+
       [fn_str] ->
         fn_expr = resolve_reference(fn_str, state.saved_vars)
         expr = GExpressionBuilder.app_single(fn_expr)
@@ -327,6 +369,7 @@ defmodule Phoebe.CLI.REPL do
         display_expression(expr)
         new_history = ["app #{fn_str}" | state.history]
         %{state | current_expr: expr, history: new_history}
+
       _ ->
         IO.puts("Usage: app <function> [<arguments>]")
         state
@@ -343,6 +386,7 @@ defmodule Phoebe.CLI.REPL do
         display_expression(expr)
         new_history = ["lam #{rest}" | state.history]
         %{state | current_expr: expr, history: new_history}
+
       _ ->
         IO.puts("Usage: lam <params> <body>")
         IO.puts("Example: lam x,y $add_var")
@@ -460,13 +504,17 @@ defmodule Phoebe.CLI.REPL do
 
   defp display_expression(expr) do
     IO.puts(Jason.encode!(expr, pretty: true))
-    IO.puts("Type: #{expr["g"]} | Pretty: #{GExpressionBuilder.format_expression(expr, "pretty")}")
+
+    IO.puts(
+      "Type: #{expr["g"]} | Pretty: #{GExpressionBuilder.format_expression(expr, "pretty")}"
+    )
   end
 
   defp display_variable(var_name, saved_vars) do
     case Map.get(saved_vars, var_name) do
       nil ->
         IO.puts("Variable '#{var_name}' not found.")
+
       expr ->
         IO.puts("\nVariable '#{var_name}':")
         IO.puts(String.duplicate("-", 30))
@@ -489,12 +537,14 @@ defmodule Phoebe.CLI.REPL do
     else
       IO.puts("\nAPI G-Expressions:")
       IO.puts(String.duplicate("-", 50))
+
       Enum.each(expressions, fn expr ->
         name = expr["name"] || "unknown"
         title = expr["title"] || "No title"
         downloads = expr["downloads_count"] || 0
         IO.puts("#{String.pad_trailing(name, 20)} #{title} (#{downloads} downloads)")
       end)
+
       IO.puts("")
     end
   end
@@ -503,12 +553,16 @@ defmodule Phoebe.CLI.REPL do
     cond do
       String.match?(value_str, ~r/^-?\d+$/) ->
         String.to_integer(value_str)
+
       String.match?(value_str, ~r/^-?\d*\.\d+$/) ->
         String.to_float(value_str)
+
       String.starts_with?(value_str, "\"") and String.ends_with?(value_str, "\"") ->
         String.slice(value_str, 1..-2)
+
       value_str in ["true", "false"] ->
         value_str == "true"
+
       true ->
         value_str
     end
@@ -529,8 +583,10 @@ defmodule Phoebe.CLI.REPL do
       Map.get(saved_vars, var_name, GExpressionBuilder.ref(var_name))
     else
       case parse_value(str) do
-        ^str -> GExpressionBuilder.ref(str)  # If unchanged, treat as reference
-        value -> GExpressionBuilder.lit(value)  # If parsed, treat as literal
+        # If unchanged, treat as reference
+        ^str -> GExpressionBuilder.ref(str)
+        # If parsed, treat as literal
+        value -> GExpressionBuilder.lit(value)
       end
     end
   end

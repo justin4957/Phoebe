@@ -1,5 +1,4 @@
 defmodule PhoebeWeb.API.VersionJSON do
-
   @doc """
   Renders a list of versions.
   """

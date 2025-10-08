@@ -18,7 +18,9 @@ defmodule PhoebeWeb.ApiDocsLive do
       <div class="api-content">
         <div class="api-section">
           <h2>GETTING STARTED</h2>
-          <p>The Phoebe API provides programmatic access to G-Expression packages. All endpoints return JSON and follow RESTful conventions.</p>
+          <p>
+            The Phoebe API provides programmatic access to G-Expression packages. All endpoints return JSON and follow RESTful conventions.
+          </p>
 
           <div class="api-tutorial-links">
             <h3>TUTORIALS</h3>
@@ -93,10 +95,14 @@ defmodule PhoebeWeb.ApiDocsLive do
           <h2 id="publishing-tutorial">PUBLISHING TUTORIAL</h2>
           <div class="tutorial-content">
             <h3>STEP 1 - PREPARE YOUR G-EXPRESSION</h3>
-            <p>Ensure your G-Expression follows the JSON G-Expression specification. All expressions must have a valid structure with 'g' (type) and 'v' (value) properties.</p>
+            <p>
+              Ensure your G-Expression follows the JSON G-Expression specification. All expressions must have a valid structure with 'g' (type) and 'v' (value) properties.
+            </p>
 
             <h3>STEP 2 - VALIDATE LOCALLY</h3>
-            <p>Test your G-Expression structure before publishing. Phoebe supports these expression types:</p>
+            <p>
+              Test your G-Expression structure before publishing. Phoebe supports these expression types:
+            </p>
             <ul>
               <li><code>lit</code> - Literal values</li>
               <li><code>ref</code> - Variable references</li>
@@ -111,7 +117,9 @@ defmodule PhoebeWeb.ApiDocsLive do
             <p>Use the POST /expressions endpoint to submit your G-Expression to the repository.</p>
 
             <h3>STEP 4 - ADD VERSIONS</h3>
-            <p>Once published, you can add new versions to your G-Expression using semantic versioning.</p>
+            <p>
+              Once published, you can add new versions to your G-Expression using semantic versioning.
+            </p>
           </div>
         </div>
 
@@ -124,10 +132,10 @@ defmodule PhoebeWeb.ApiDocsLive do
             <h3>SEARCH AND DISCOVERY</h3>
             <div class="code-sample">
               <code># Search for lambda expressions
-              curl "http://localhost:4000/api/v1/expressions?search=lambda"
+                curl "http://localhost:4000/api/v1/expressions?search=lambda"
 
-              # Browse all expressions
-              curl "http://localhost:4000/api/v1/expressions"</code>
+                # Browse all expressions
+                curl "http://localhost:4000/api/v1/expressions"</code>
             </div>
 
             <h3>AUTOMATED WORKFLOWS</h3>
@@ -139,11 +147,15 @@ defmodule PhoebeWeb.ApiDocsLive do
           <h2 id="validation-tutorial">VALIDATION TUTORIAL</h2>
           <div class="tutorial-content">
             <h3>G-EXPRESSION STRUCTURE</h3>
-            <p>Every G-Expression must follow this basic structure with 'g' (type) and 'v' (value) properties.</p>
+            <p>
+              Every G-Expression must follow this basic structure with 'g' (type) and 'v' (value) properties.
+            </p>
 
             <h3>VALIDATION RULES</h3>
             <ul>
-              <li>Expression names must be unique and contain only alphanumeric characters, dashes, and underscores</li>
+              <li>
+                Expression names must be unique and contain only alphanumeric characters, dashes, and underscores
+              </li>
               <li>All G-Expressions must have valid 'g' and 'v' properties</li>
               <li>Lambda expressions require 'params' (array) and 'body' (G-Expression)</li>
               <li>Application expressions require 'fn' and 'args' properties</li>
@@ -154,7 +166,9 @@ defmodule PhoebeWeb.ApiDocsLive do
 
         <div class="api-section">
           <h2>RESPONSE FORMAT</h2>
-          <p>All API responses follow a consistent JSON structure with 'data' and 'meta' properties.</p>
+          <p>
+            All API responses follow a consistent JSON structure with 'data' and 'meta' properties.
+          </p>
 
           <h3>ERROR RESPONSES</h3>
           <p>Errors include detailed messages and validation information when applicable.</p>
@@ -162,14 +176,23 @@ defmodule PhoebeWeb.ApiDocsLive do
 
         <div class="api-section">
           <h2>RATE LIMITS</h2>
-          <p>Currently, there are no rate limits imposed on the API. However, please be respectful of the service and avoid excessive requests.</p>
+          <p>
+            Currently, there are no rate limits imposed on the API. However, please be respectful of the service and avoid excessive requests.
+          </p>
         </div>
 
         <div class="api-section">
           <h2>SUPPORT</h2>
-          <p>For questions about the G-Expression specification, visit the <a href="https://github.com/json-g/json_ge_lib" class="spec-link">JSON G-Expression specification</a>.</p>
+          <p>
+            For questions about the G-Expression specification, visit the <a
+              href="https://github.com/json-g/json_ge_lib"
+              class="spec-link"
+            >JSON G-Expression specification</a>.
+          </p>
 
-          <p>For issues with the Phoebe API or to contribute improvements, please visit our repository or contact the development team.</p>
+          <p>
+            For issues with the Phoebe API or to contribute improvements, please visit our repository or contact the development team.
+          </p>
         </div>
       </div>
     </div>
